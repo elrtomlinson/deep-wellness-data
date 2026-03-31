@@ -1,9 +1,12 @@
 import { AppLayout } from '@/components/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { Shield, Database, Heart, Brain } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Shield, Database, Heart, Brain, FlaskConical } from 'lucide-react';
 import { useBrainFog } from '@/contexts/BrainFogContext';
 import { ReminderManager } from '@/components/ReminderManager';
+import { useHealthData } from '@/hooks/useHealthData';
+import { toast } from 'sonner';
 
 export default function SettingsPage() {
   const { brainFogMode, setBrainFogMode } = useBrainFog();
