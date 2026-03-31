@@ -244,7 +244,7 @@ export default function ReportPage() {
         ) : (
           <>
             {/* Quick stats */}
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <MiniStat label="Pain" value={report.avgPain.toFixed(1)} />
               <MiniStat label="Sleep" value={report.avgSleep.toFixed(1)} />
               <MiniStat label="Mood" value={report.avgMood.toFixed(1)} />
