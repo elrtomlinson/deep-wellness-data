@@ -16,7 +16,7 @@ import {
 type ReputeFilter = 'all' | 'Bad' | 'Good' | 'none';
 
 export default function DnaReportPage() {
-  const [report, setReport] = useLocalStorage<DnaReport | null>('dna-report', null);
+  const [report, setReport, { loaded, remove: removeReport }] = useIndexedDB<DnaReport | null>('dna-report', null);
   const [parsing, setParsing] = useState(false);
   const [search, setSearch] = useState('');
   const [reputeFilter, setReputeFilter] = useState<ReputeFilter>('all');
