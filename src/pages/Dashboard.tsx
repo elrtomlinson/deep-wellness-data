@@ -326,6 +326,9 @@ export default function DashboardPage() {
             {/* Trigger Mapping */}
             <TriggerMapping />
 
+            {/* Symptom Cycles */}
+            <SymptomCycles />
+
             {/* Correlation Analysis */}
             <CorrelationAnalysis days={days} />
 
