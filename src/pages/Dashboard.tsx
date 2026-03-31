@@ -16,6 +16,7 @@ import { FlareForecast } from '@/components/FlareForecast';
 import { MedicationEffectivenessTracker } from '@/components/MedicationEffectivenessTracker';
 import { TreatmentEffectivenessTracker } from '@/components/TreatmentEffectivenessTracker';
 import { CorrelationAnalysis } from '@/components/CorrelationAnalysis';
+import { DnaConditionInsights } from '@/components/DnaConditionInsights';
 
 const CHART_COLORS = [
   'hsl(var(--chart-1))',
@@ -322,6 +323,9 @@ export default function DashboardPage() {
 
             {/* Correlation Analysis */}
             <CorrelationAnalysis days={days} />
+
+            {/* DNA Condition Insights */}
+            <DnaConditionInsights />
 
             {/* Medication effectiveness */}
             <MedicationEffectivenessTracker />
