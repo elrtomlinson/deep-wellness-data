@@ -43,8 +43,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
 
-      <nav aria-label="Main navigation" className="border-t bg-card sticky bottom-0 z-40">
-        <ul className="container flex justify-around py-1" role="list">
+      <nav aria-label="Main navigation" className="border-t bg-card sticky bottom-0 z-40 overflow-x-auto">
+        <ul className="container flex py-1 min-w-max" role="list">
           {items.map(({ to, label, icon: Icon }) => {
             const active = location.pathname === to;
             return (
