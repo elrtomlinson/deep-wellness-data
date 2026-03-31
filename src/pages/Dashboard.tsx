@@ -8,7 +8,7 @@ import { AppLayout } from '@/components/AppLayout';
 import { getSeverityLevel } from '@/types/health';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { Activity, Moon, Brain, TrendingUp, AlertCircle, Settings2 } from 'lucide-react';
+import { Activity, Moon, Brain, TrendingUp, AlertCircle, Settings2, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -215,10 +215,11 @@ export default function DashboardPage() {
           <>
             {/* Today's summary */}
             {todayLog ? (
-              <div className="grid grid-cols-3 gap-3" role="group" aria-label="Today's summary">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" role="group" aria-label="Today's summary">
                 <SummaryCard icon={<Activity className="h-4 w-4" />} label="Pain" value={todayLog.overallPain} max={10} />
                 <SummaryCard icon={<Moon className="h-4 w-4" />} label="Sleep" value={todayLog.sleepQuality} max={10} />
                 <SummaryCard icon={<Brain className="h-4 w-4" />} label="Mood" value={todayLog.mood} max={10} />
+                <SummaryCard icon={<Zap className="h-4 w-4" />} label="Energy" value={todayLog.energyLevel ?? 50} max={100} unit="%" />
               </div>
             ) : (
               <Card className="p-4 border-dashed flex items-center gap-3">
@@ -326,11 +327,11 @@ export default function DashboardPage() {
   );
 }
 
-function SummaryCard({ icon, label, value, max }: { icon: React.ReactNode; label: string; value: number; max: number }) {
+function SummaryCard({ icon, label, value, max, unit }: { icon: React.ReactNode; label: string; value: number; max: number; unit?: string }) {
   return (
-    <Card className="p-4 text-center" role="status" aria-label={`${label}: ${value} out of ${max}`}>
+    <Card className="p-4 text-center" role="status" aria-label={`${label}: ${value}${unit ?? ''} out of ${max}`}>
       <div className="flex justify-center text-primary mb-1" aria-hidden="true">{icon}</div>
-      <p className="text-2xl font-bold tabular-nums">{value}</p>
+      <p className="text-2xl font-bold tabular-nums">{value}{unit ?? ''}</p>
       <p className="text-xs text-muted-foreground">{label}</p>
     </Card>
   );

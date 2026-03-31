@@ -35,9 +35,12 @@ export interface DailyLog {
   sleepHours: number;
   sleepQuality: number; // 0-10
   mood: number; // 0-10
+  energyLevel: number; // 0-100 percent
+  energySpent: number; // 0-100 percent used
   symptoms: SymptomLog[];
   medications: MedicationLog[];
   treatments: TreatmentLog[];
+  sideEffects: SideEffectLog[];
   notes: string;
   createdAt: string;
 }
@@ -55,6 +58,13 @@ export interface MedicationLog {
 export interface TreatmentLog {
   treatmentId: string;
   done: boolean;
+}
+
+export interface SideEffectLog {
+  medicationId: string;
+  effect: string;
+  severity: number; // 0-10
+  hoursAfterDose: number;
 }
 
 export type SeverityLevel = 'none' | 'low' | 'moderate' | 'high' | 'severe';
