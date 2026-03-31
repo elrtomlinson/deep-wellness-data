@@ -123,7 +123,11 @@ export default function DnaReportPage() {
           )}
         </div>
 
-        {!report ? (
+        {!loaded ? (
+          <Card className="p-8 text-center">
+            <p className="text-muted-foreground text-sm">Loading...</p>
+          </Card>
+        ) : !report ? (
           <Card className="p-8 text-center space-y-4">
             <Dna className="h-12 w-12 mx-auto text-muted-foreground" />
             <h3 className="text-lg font-medium">Upload Promethease Report</h3>
