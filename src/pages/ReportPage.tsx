@@ -200,7 +200,7 @@ export default function ReportPage() {
       avgPain, avgSleep, avgMood, avgEnergy,
       topSymptoms, medReport, treatReport, topSideEffects,
     };
-  }, [recentLogs, range, conditions, symptoms, medications, treatments]);
+  }, [recentLogs, range, conditions, symptoms, medications, treatments, recentWeather, hasWeather]);
 
   const copyReport = async () => {
     if (!report) return;
