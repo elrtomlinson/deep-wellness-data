@@ -20,6 +20,14 @@ export interface Medication {
   active: boolean;
 }
 
+export interface Treatment {
+  id: string;
+  name: string;
+  dosage: string;
+  conditionIds: string[];
+  active: boolean;
+}
+
 export interface DailyLog {
   id: string;
   date: string; // YYYY-MM-DD

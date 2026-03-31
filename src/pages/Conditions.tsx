@@ -243,6 +243,71 @@ export default function ConditionsPage() {
             </div>
           )}
         </section>
+
+        {/* Treatments */}
+        <section aria-labelledby="treatments-heading">
+          <div className="flex items-center justify-between mb-4">
+            <h2 id="treatments-heading" className="text-xl font-semibold">Treatments</h2>
+            <Button size="sm" onClick={() => setShowAddTreatment(!showAddTreatment)} aria-expanded={showAddTreatment}>
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              Add
+            </Button>
+          </div>
+
+          {showAddTreatment && (
+            <Card className="p-4 mb-4 space-y-3 animate-fade-in">
+              <div>
+                <Label htmlFor="treat-name">Treatment name</Label>
+                <Input id="treat-name" value={treatName} onChange={e => setTreatName(e.target.value)} placeholder="e.g. Physical therapy" autoFocus />
+              </div>
+              <div>
+                <Label htmlFor="treat-dosage">Details</Label>
+                <Input id="treat-dosage" value={treatDosage} onChange={e => setTreatDosage(e.target.value)} placeholder="e.g. 2x weekly, 30 min sessions" />
+              </div>
+              {conditions.length > 0 && (
+                <fieldset>
+                  <legend className="text-sm font-medium mb-2">For conditions (optional)</legend>
+                  <div className="flex flex-wrap gap-2">
+                    {conditions.map(c => (
+                      <label key={c.id} className="flex items-center gap-2 cursor-pointer">
+                        <Checkbox
+                          checked={treatConditions.includes(c.id)}
+                          onCheckedChange={() => toggleConditionSelection(c.id, treatConditions, setTreatConditions)}
+                        />
+                        <span className="text-sm">{c.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              )}
+              <div className="flex gap-2">
+                <Button onClick={handleAddTreatment} disabled={!treatName.trim()}>Save</Button>
+                <Button variant="ghost" onClick={() => setShowAddTreatment(false)}>Cancel</Button>
+              </div>
+            </Card>
+          )}
+
+          {treatments.length === 0 ? (
+            <p className="text-muted-foreground text-sm">No treatments added yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {treatments.map(t => (
+                <Card key={t.id} className="p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Heart className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <div>
+                      <p className="font-medium">{t.name}</p>
+                      {t.dosage && <p className="text-sm text-muted-foreground">{t.dosage}</p>}
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="icon" onClick={() => removeTreatment(t.id)} aria-label={`Remove ${t.name}`}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                </Card>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </AppLayout>
   );

@@ -79,6 +79,7 @@ export function useHealthData() {
     conditions, setConditions, addCondition, removeCondition,
     symptoms, setSymptoms, addSymptom, removeSymptom,
     medications, setMedications, addMedication, removeMedication,
+    treatments, setTreatments, addTreatment, removeTreatment,
     logs, addLog, getLogByDate, getRecentLogs,
   };
 }
