@@ -321,7 +321,7 @@ export default function DashboardPage() {
             )}
 
             {/* Correlation Analysis */}
-            <CorrelationAnalysis />
+            <CorrelationAnalysis days={days} />
 
             {/* Medication effectiveness */}
             <MedicationEffectivenessTracker />
