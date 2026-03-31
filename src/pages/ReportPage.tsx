@@ -6,9 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { useHealthData } from '@/hooks/useHealthData';
 import { AppLayout } from '@/components/AppLayout';
 import { getSeverityLevel } from '@/types/health';
-import { FileText, Copy, Check } from 'lucide-react';
+import { FileText, Copy, Check, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { useWeather } from '@/hooks/useWeather';
+import { generateClinicalPdf } from '@/lib/clinical-pdf';
+import { pearson, getCorrelationStrength, generateInsight } from '@/lib/correlation';
 
 type ReportRange = 7 | 14 | 30;
 
@@ -210,6 +212,47 @@ export default function ReportPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const downloadPdf = () => {
+    // Compute correlations for PDF
+    const correlations: { varA: string; varB: string; r: number; insight: string }[] = [];
+    if (recentLogs.length >= 4) {
+      const series: Record<string, number[]> = {
+        Pain: recentLogs.map(l => l.overallPain),
+        Sleep: recentLogs.map(l => l.sleepQuality),
+        Mood: recentLogs.map(l => l.mood),
+        Energy: recentLogs.map(l => (l.energyLevel ?? 50) / 10),
+      };
+      symptoms.forEach(sym => {
+        const vals = recentLogs.map(l => {
+          const sl = l.symptoms.find(s => s.symptomId === sym.id);
+          return sl?.severity ?? 0;
+        });
+        if (vals.some(v => v > 0)) series[sym.name] = vals;
+      });
+
+      const keys = Object.keys(series);
+      for (let i = 0; i < keys.length; i++) {
+        for (let j = i + 1; j < keys.length; j++) {
+          const r = pearson(series[keys[i]], series[keys[j]]);
+          if (r === null) continue;
+          const strength = getCorrelationStrength(r);
+          if (strength === 'none') continue;
+          correlations.push({
+            varA: keys[i], varB: keys[j], r,
+            insight: generateInsight(keys[i], keys[j], r),
+          });
+        }
+      }
+      correlations.sort((a, b) => Math.abs(b.r) - Math.abs(a.r));
+    }
+
+    generateClinicalPdf({
+      range, conditions, symptoms, medications, treatments, logs,
+      correlations,
+    });
+    toast.success('PDF downloaded');
+  };
+
   return (
     <AppLayout>
       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
@@ -255,10 +298,16 @@ export default function ReportPage() {
             <Card className="p-5 space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-sm">SBAR Report</h3>
-                <Button variant="outline" size="sm" onClick={copyReport}>
-                  {copied ? <Check className="h-4 w-4 mr-1" /> : <Copy className="h-4 w-4 mr-1" />}
-                  {copied ? 'Copied' : 'Copy'}
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={downloadPdf}>
+                    <Download className="h-4 w-4 mr-1" />
+                    PDF
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={copyReport}>
+                    {copied ? <Check className="h-4 w-4 mr-1" /> : <Copy className="h-4 w-4 mr-1" />}
+                    {copied ? 'Copied' : 'Copy'}
+                  </Button>
+                </div>
               </div>
               <pre className="text-xs leading-relaxed whitespace-pre-wrap font-sans text-foreground bg-muted/50 p-4 rounded-lg overflow-auto max-h-[60vh]">
                 {report.text}
