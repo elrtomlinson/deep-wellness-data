@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, PenLine, Stethoscope, FileText, Settings } from 'lucide-react';
+import { LayoutDashboard, PenLine, Stethoscope, FileText, Settings, Calendar, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBrainFog } from '@/contexts/BrainFogContext';
 
