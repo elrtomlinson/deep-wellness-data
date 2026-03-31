@@ -60,6 +60,13 @@ export interface TreatmentLog {
   done: boolean;
 }
 
+export interface SideEffectLog {
+  medicationId: string;
+  effect: string;
+  severity: number; // 0-10
+  hoursAfterDose: number;
+}
+
 export type SeverityLevel = 'none' | 'low' | 'moderate' | 'high' | 'severe';
 
 export function getSeverityLevel(value: number): SeverityLevel {

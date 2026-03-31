@@ -1,13 +1,15 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { SeveritySlider } from '@/components/SeveritySlider';
+import { EnergyTracker } from '@/components/EnergyTracker';
+import { SideEffectLogger } from '@/components/SideEffectLogger';
 import { useHealthData } from '@/hooks/useHealthData';
 import { AppLayout } from '@/components/AppLayout';
-import { SymptomLog, MedicationLog, TreatmentLog } from '@/types/health';
+import { SymptomLog, MedicationLog, TreatmentLog, SideEffectLog } from '@/types/health';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -21,6 +23,8 @@ export default function TrackPage() {
   const [sleepHours, setSleepHours] = useState(existingLog?.sleepHours ?? 7);
   const [sleepQuality, setSleepQuality] = useState(existingLog?.sleepQuality ?? 5);
   const [mood, setMood] = useState(existingLog?.mood ?? 5);
+  const [energyLevel, setEnergyLevel] = useState(existingLog?.energyLevel ?? 50);
+  const [energySpent, setEnergySpent] = useState(existingLog?.energySpent ?? 0);
   const [notes, setNotes] = useState(existingLog?.notes ?? '');
 
   const [symptomLogs, setSymptomLogs] = useState<SymptomLog[]>(
@@ -31,6 +35,9 @@ export default function TrackPage() {
   );
   const [treatmentLogs, setTreatmentLogs] = useState<TreatmentLog[]>(
     existingLog?.treatments ?? treatments.filter(t => t.active).map(t => ({ treatmentId: t.id, done: false }))
+  );
+  const [sideEffects, setSideEffects] = useState<SideEffectLog[]>(
+    existingLog?.sideEffects ?? []
   );
 
   const changeDate = (days: number) => {
@@ -44,53 +51,43 @@ export default function TrackPage() {
       setSleepHours(log.sleepHours);
       setSleepQuality(log.sleepQuality);
       setMood(log.mood);
+      setEnergyLevel(log.energyLevel ?? 50);
+      setEnergySpent(log.energySpent ?? 0);
       setNotes(log.notes);
       setSymptomLogs(log.symptoms);
       setMedLogs(log.medications);
       setTreatmentLogs(log.treatments ?? []);
+      setSideEffects(log.sideEffects ?? []);
     } else {
-      setPain(0);
-      setSleepHours(7);
-      setSleepQuality(5);
-      setMood(5);
-      setNotes('');
+      setPain(0); setSleepHours(7); setSleepQuality(5); setMood(5);
+      setEnergyLevel(50); setEnergySpent(0); setNotes('');
       setSymptomLogs(symptoms.map(s => ({ symptomId: s.id, severity: 0 })));
       setMedLogs(medications.filter(m => m.active).map(m => ({ medicationId: m.id, taken: false })));
       setTreatmentLogs(treatments.filter(t => t.active).map(t => ({ treatmentId: t.id, done: false })));
+      setSideEffects([]);
     }
   };
 
   const handleSave = () => {
     addLog({
-      date: currentDate,
-      overallPain: pain,
-      sleepHours,
-      sleepQuality,
-      mood,
-      symptoms: symptomLogs,
-      medications: medLogs,
-      treatments: treatmentLogs,
-      notes,
+      date: currentDate, overallPain: pain, sleepHours, sleepQuality, mood,
+      energyLevel, energySpent,
+      symptoms: symptomLogs, medications: medLogs, treatments: treatmentLogs,
+      sideEffects, notes,
     });
     toast.success('Log saved!');
   };
 
   const updateSymptomSeverity = (symptomId: string, severity: number) => {
-    setSymptomLogs(prev =>
-      prev.map(s => s.symptomId === symptomId ? { ...s, severity } : s)
-    );
+    setSymptomLogs(prev => prev.map(s => s.symptomId === symptomId ? { ...s, severity } : s));
   };
 
   const toggleMed = (medicationId: string) => {
-    setMedLogs(prev =>
-      prev.map(m => m.medicationId === medicationId ? { ...m, taken: !m.taken } : m)
-    );
+    setMedLogs(prev => prev.map(m => m.medicationId === medicationId ? { ...m, taken: !m.taken } : m));
   };
 
   const toggleTreatment = (treatmentId: string) => {
-    setTreatmentLogs(prev =>
-      prev.map(t => t.treatmentId === treatmentId ? { ...t, done: !t.done } : t)
-    );
+    setTreatmentLogs(prev => prev.map(t => t.treatmentId === treatmentId ? { ...t, done: !t.done } : t));
   };
 
   const isToday = currentDate === format(new Date(), 'yyyy-MM-dd');
@@ -126,6 +123,14 @@ export default function TrackPage() {
           <SeveritySlider id="mood" label="Mood" value={mood} onChange={setMood} />
         </Card>
 
+        {/* Energy Tracker */}
+        <EnergyTracker
+          energyLevel={energyLevel}
+          energySpent={energySpent}
+          onEnergyLevelChange={setEnergyLevel}
+          onEnergySpentChange={setEnergySpent}
+        />
+
         {/* Symptoms */}
         {symptoms.length > 0 && (
           <Card className="p-5 space-y-4">
@@ -134,13 +139,7 @@ export default function TrackPage() {
               const sym = symptoms.find(s => s.id === sl.symptomId);
               if (!sym) return null;
               return (
-                <SeveritySlider
-                  key={sl.symptomId}
-                  id={`sym-${sl.symptomId}`}
-                  label={sym.name}
-                  value={sl.severity}
-                  onChange={v => updateSymptomSeverity(sl.symptomId, v)}
-                />
+                <SeveritySlider key={sl.symptomId} id={`sym-${sl.symptomId}`} label={sym.name} value={sl.severity} onChange={v => updateSymptomSeverity(sl.symptomId, v)} />
               );
             })}
           </Card>
@@ -155,11 +154,7 @@ export default function TrackPage() {
               if (!med) return null;
               return (
                 <label key={ml.medicationId} className="flex items-center gap-3 cursor-pointer touch-target">
-                  <Checkbox
-                    checked={ml.taken}
-                    onCheckedChange={() => toggleMed(ml.medicationId)}
-                    aria-label={`Took ${med.name}`}
-                  />
+                  <Checkbox checked={ml.taken} onCheckedChange={() => toggleMed(ml.medicationId)} aria-label={`Took ${med.name}`} />
                   <div>
                     <span className="text-sm font-medium">{med.name}</span>
                     {med.dosage && <span className="text-xs text-muted-foreground ml-2">{med.dosage}</span>}
@@ -170,6 +165,9 @@ export default function TrackPage() {
           </Card>
         )}
 
+        {/* Side Effects */}
+        <SideEffectLogger medications={medications} sideEffects={sideEffects} onChange={setSideEffects} />
+
         {/* Treatments */}
         {treatmentLogs.length > 0 && (
           <Card className="p-5 space-y-3">
@@ -179,11 +177,7 @@ export default function TrackPage() {
               if (!treat) return null;
               return (
                 <label key={tl.treatmentId} className="flex items-center gap-3 cursor-pointer touch-target">
-                  <Checkbox
-                    checked={tl.done}
-                    onCheckedChange={() => toggleTreatment(tl.treatmentId)}
-                    aria-label={`Did ${treat.name}`}
-                  />
+                  <Checkbox checked={tl.done} onCheckedChange={() => toggleTreatment(tl.treatmentId)} aria-label={`Did ${treat.name}`} />
                   <div>
                     <span className="text-sm font-medium">{treat.name}</span>
                     {treat.dosage && <span className="text-xs text-muted-foreground ml-2">{treat.dosage}</span>}
@@ -197,13 +191,7 @@ export default function TrackPage() {
         {/* Notes */}
         <Card className="p-5 space-y-2">
           <label htmlFor="log-notes" className="font-semibold text-sm">Notes</label>
-          <Textarea
-            id="log-notes"
-            value={notes}
-            onChange={e => setNotes(e.target.value)}
-            placeholder="Anything notable today..."
-            rows={3}
-          />
+          <Textarea id="log-notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Anything notable today..." rows={3} />
         </Card>
 
         <Button onClick={handleSave} className="w-full touch-target" size="lg">

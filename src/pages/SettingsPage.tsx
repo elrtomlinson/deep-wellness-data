@@ -1,12 +1,35 @@
 import { AppLayout } from '@/components/AppLayout';
 import { Card } from '@/components/ui/card';
-import { Shield, Database, Heart } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Shield, Database, Heart, Brain } from 'lucide-react';
+import { useBrainFog } from '@/contexts/BrainFogContext';
 
 export default function SettingsPage() {
+  const { brainFogMode, setBrainFogMode } = useBrainFog();
+
   return (
     <AppLayout>
       <div className="max-w-2xl mx-auto space-y-6">
         <h2 className="text-2xl font-semibold">Settings</h2>
+
+        <Card className="p-5 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Brain className="h-5 w-5 text-primary" aria-hidden="true" />
+              <div>
+                <h3 className="font-semibold">Brain Fog Mode</h3>
+                <p className="text-sm text-muted-foreground">
+                  Simplifies the interface with larger buttons and fewer options for low-energy days.
+                </p>
+              </div>
+            </div>
+            <Switch
+              checked={brainFogMode}
+              onCheckedChange={(v) => setBrainFogMode(v)}
+              aria-label="Toggle brain fog mode"
+            />
+          </div>
+        </Card>
 
         <Card className="p-5 space-y-3">
           <div className="flex items-center gap-3">
