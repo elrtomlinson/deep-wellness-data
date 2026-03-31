@@ -10,27 +10,29 @@ import { toast } from 'sonner';
 
 export default function SettingsPage() {
   const { brainFogMode, setBrainFogMode } = useBrainFog();
-  const { addCondition, addSymptom, addMedication, addTreatment, addLog, conditions } = useHealthData();
 
   const loadDemoData = () => {
-    if (conditions.length > 0) {
+    if (localStorage.getItem('health-conditions')) {
       toast.error('Data already exists. Clear your browser data first.');
       return;
     }
-    const c1 = addCondition({ name: 'Fibromyalgia', notes: 'Chronic widespread pain' });
-    const c2 = addCondition({ name: 'Migraine', notes: 'Episodic with aura' });
-    const s1 = addSymptom({ name: 'Joint Pain', conditionIds: [c1.id] });
-    const s2 = addSymptom({ name: 'Headache', conditionIds: [c2.id] });
-    const s3 = addSymptom({ name: 'Fatigue', conditionIds: [c1.id, c2.id] });
-    const m1 = addMedication({ name: 'Ibuprofen', dosage: '400mg', conditionIds: [c1.id], active: true });
-    const m2 = addMedication({ name: 'Sumatriptan', dosage: '50mg', conditionIds: [c2.id], active: true });
-    const t1 = addTreatment({ name: 'Yoga', dosage: '30 min', conditionIds: [c1.id], active: true });
 
+    const c1 = { id: crypto.randomUUID(), name: 'Fibromyalgia', notes: 'Chronic widespread pain', createdAt: new Date().toISOString() };
+    const c2 = { id: crypto.randomUUID(), name: 'Migraine', notes: 'Episodic with aura', createdAt: new Date().toISOString() };
+    const s1 = { id: crypto.randomUUID(), name: 'Joint Pain', conditionIds: [c1.id], createdAt: new Date().toISOString() };
+    const s2 = { id: crypto.randomUUID(), name: 'Headache', conditionIds: [c2.id], createdAt: new Date().toISOString() };
+    const s3 = { id: crypto.randomUUID(), name: 'Fatigue', conditionIds: [c1.id, c2.id], createdAt: new Date().toISOString() };
+    const m1 = { id: crypto.randomUUID(), name: 'Ibuprofen', dosage: '400mg', conditionIds: [c1.id], active: true };
+    const m2 = { id: crypto.randomUUID(), name: 'Sumatriptan', dosage: '50mg', conditionIds: [c2.id], active: true };
+    const t1 = { id: crypto.randomUUID(), name: 'Yoga', dosage: '30 min', conditionIds: [c1.id], active: true };
+
+    const logs = [];
     for (let i = 20; i >= 0; i--) {
       const d = new Date(); d.setDate(d.getDate() - i);
       const date = d.toISOString().slice(0, 10);
       const pain = Math.round(3 + Math.random() * 5);
-      addLog({
+      logs.push({
+        id: crypto.randomUUID(),
         date,
         overallPain: pain,
         sleepHours: +(5 + Math.random() * 3).toFixed(1),
@@ -50,9 +52,18 @@ export default function SettingsPage() {
         treatments: [{ treatmentId: t1.id, done: Math.random() > 0.3 }],
         sideEffects: [],
         notes: '',
+        createdAt: new Date().toISOString(),
       });
     }
-    toast.success('Demo data loaded! Check the Dashboard.');
+
+    localStorage.setItem('health-conditions', JSON.stringify([c1, c2]));
+    localStorage.setItem('health-symptoms', JSON.stringify([s1, s2, s3]));
+    localStorage.setItem('health-medications', JSON.stringify([m1, m2]));
+    localStorage.setItem('health-treatments', JSON.stringify([t1]));
+    localStorage.setItem('health-logs', JSON.stringify(logs));
+
+    toast.success('Demo data loaded! Refreshing...');
+    setTimeout(() => window.location.href = '/', 500);
   };
 
   return (
