@@ -115,13 +115,13 @@ export default function SettingsPage() {
           </Button>
         </Card>
 
+        <Card className="p-5 space-y-3">
           <div className="flex items-center gap-3">
             <Heart className="h-5 w-5 text-primary" aria-hidden="true" />
             <h3 className="font-semibold">Coming soon</h3>
           </div>
           <ul className="text-sm text-muted-foreground space-y-1">
             <li>• Medical research papers for your conditions</li>
-            <li>• Promethease DNA report upload & analysis</li>
             <li>• Community insights & top treatments</li>
             <li>• Data export & backup</li>
           </ul>
