@@ -212,7 +212,7 @@ export default function ReportPage() {
 
   return (
     <AppLayout>
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold">Clinical Brief</h2>
           <div className="flex gap-1">

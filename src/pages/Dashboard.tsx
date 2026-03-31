@@ -238,8 +238,8 @@ export default function DashboardPage() {
 
             {/* Trends chart */}
             {chartData.length > 1 && (
-              <Card className="p-5">
-                <h3 className="font-semibold mb-4">14-Day Trends</h3>
+            <Card className="p-3 sm:p-5">
+                <h3 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">14-Day Trends</h3>
                 <div className="h-48" role="img" aria-label="Chart showing trends over the last 14 days">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData}>
