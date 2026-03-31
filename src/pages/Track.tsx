@@ -170,6 +170,30 @@ export default function TrackPage() {
           </Card>
         )}
 
+        {/* Treatments */}
+        {treatmentLogs.length > 0 && (
+          <Card className="p-5 space-y-3">
+            <h3 className="font-semibold">Treatments</h3>
+            {treatmentLogs.map(tl => {
+              const treat = treatments.find(t => t.id === tl.treatmentId);
+              if (!treat) return null;
+              return (
+                <label key={tl.treatmentId} className="flex items-center gap-3 cursor-pointer touch-target">
+                  <Checkbox
+                    checked={tl.done}
+                    onCheckedChange={() => toggleTreatment(tl.treatmentId)}
+                    aria-label={`Did ${treat.name}`}
+                  />
+                  <div>
+                    <span className="text-sm font-medium">{treat.name}</span>
+                    {treat.dosage && <span className="text-xs text-muted-foreground ml-2">{treat.dosage}</span>}
+                  </div>
+                </label>
+              );
+            })}
+          </Card>
+        )}
+
         {/* Notes */}
         <Card className="p-5 space-y-2">
           <label htmlFor="log-notes" className="font-semibold text-sm">Notes</label>
