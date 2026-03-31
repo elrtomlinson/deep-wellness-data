@@ -212,7 +212,7 @@ export default function ReportPage() {
 
   return (
     <AppLayout>
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold">Clinical Brief</h2>
           <div className="flex gap-1">
@@ -244,7 +244,7 @@ export default function ReportPage() {
         ) : (
           <>
             {/* Quick stats */}
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <MiniStat label="Pain" value={report.avgPain.toFixed(1)} />
               <MiniStat label="Sleep" value={report.avgSleep.toFixed(1)} />
               <MiniStat label="Mood" value={report.avgMood.toFixed(1)} />

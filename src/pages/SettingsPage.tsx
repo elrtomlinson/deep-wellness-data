@@ -10,7 +10,7 @@ export default function SettingsPage() {
 
   return (
     <AppLayout>
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <h2 className="text-2xl font-semibold">Settings</h2>
 
         <Card className="p-5 space-y-3">

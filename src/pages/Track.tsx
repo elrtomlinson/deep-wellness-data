@@ -95,7 +95,7 @@ export default function TrackPage() {
 
   return (
     <AppLayout>
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         {/* Date selector */}
         <div className="flex items-center justify-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => changeDate(-1)} aria-label="Previous day">
@@ -115,8 +115,8 @@ export default function TrackPage() {
         )}
 
         {/* Overall metrics */}
-        <Card className="p-5 space-y-5">
-          <h3 className="font-semibold">How are you feeling?</h3>
+        <Card className="p-4 sm:p-5 space-y-4 sm:space-y-5">
+          <h3 className="font-semibold text-sm sm:text-base">How are you feeling?</h3>
           <SeveritySlider id="pain" label="Overall pain" value={pain} onChange={setPain} />
           <SeveritySlider id="sleep-hours" label="Sleep" value={sleepHours} onChange={setSleepHours} max={16} unit="hrs" step={0.5} />
           <SeveritySlider id="sleep-quality" label="Sleep quality" value={sleepQuality} onChange={setSleepQuality} />

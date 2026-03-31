@@ -32,35 +32,38 @@ export function AppLayout({ children }: { children: ReactNode }) {
         Skip to main content
       </a>
 
-      <header className="border-b bg-card px-4 py-3">
-        <div className="container flex items-center gap-3">
-          <Stethoscope className={cn('text-primary', brainFogMode ? 'h-8 w-8' : 'h-6 w-6')} aria-hidden="true" />
-          <h1 className={cn('font-semibold tracking-tight', brainFogMode ? 'text-xl' : 'text-lg')}>Chronicle</h1>
+      <header className="border-b bg-card px-3 py-2.5 sm:px-4 sm:py-3">
+        <div className="container flex items-center gap-2">
+          <Stethoscope className={cn('text-primary', brainFogMode ? 'h-8 w-8' : 'h-5 w-5 sm:h-6 sm:w-6')} aria-hidden="true" />
+          <h1 className={cn('font-semibold tracking-tight', brainFogMode ? 'text-xl' : 'text-base sm:text-lg')}>Chronicle</h1>
         </div>
       </header>
 
-      <main id="main-content" className="flex-1 container py-6 px-4 animate-fade-in" tabIndex={-1}>
+      <main id="main-content" className="flex-1 container py-4 sm:py-6 pb-20 animate-fade-in" tabIndex={-1}>
         {children}
       </main>
 
-      <nav aria-label="Main navigation" className="border-t bg-card sticky bottom-0 z-40 overflow-x-auto">
-        <ul className="container flex py-1 min-w-max" role="list">
+      <nav aria-label="Main navigation" className="border-t bg-card fixed bottom-0 left-0 right-0 z-40 safe-area-bottom">
+        <ul className="container flex justify-around py-1" role="list">
           {items.map(({ to, label, icon: Icon }) => {
             const active = location.pathname === to;
             return (
-              <li key={to}>
+              <li key={to} className="flex-1">
                 <Link
                   to={to}
                   className={cn(
-                    'flex flex-col items-center gap-0.5 px-3 py-2 touch-target rounded-lg transition-colors',
+                    'flex flex-col items-center gap-0.5 py-1.5 sm:py-2 rounded-lg transition-colors',
                     'hover:bg-accent focus-visible:bg-accent',
                     active ? 'text-primary font-medium' : 'text-muted-foreground',
-                    brainFogMode && 'py-3 px-5'
+                    brainFogMode && 'py-3'
                   )}
                   aria-current={active ? 'page' : undefined}
                 >
                   <Icon className={cn(brainFogMode ? 'h-7 w-7' : 'h-5 w-5')} aria-hidden="true" />
-                  <span className={cn(brainFogMode ? 'text-sm font-medium' : 'text-xs')}>{label}</span>
+                  <span className={cn(
+                    brainFogMode ? 'text-sm font-medium' : 'text-[10px] sm:text-xs leading-tight',
+                    !active && !brainFogMode && 'hidden sm:block'
+                  )}>{label}</span>
                 </Link>
               </li>
             );

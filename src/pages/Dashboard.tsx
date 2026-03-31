@@ -133,7 +133,7 @@ export default function DashboardPage() {
 
   return (
     <AppLayout>
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold">Dashboard</h2>
           {hasTrackableItems && (
@@ -221,7 +221,7 @@ export default function DashboardPage() {
           <>
             {/* Today's summary */}
             {todayLog ? (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" role="group" aria-label="Today's summary">
+              <div className="grid grid-cols-4 gap-2 sm:gap-3" role="group" aria-label="Today's summary">
                 <SummaryCard icon={<Activity className="h-4 w-4" />} label="Pain" value={todayLog.overallPain} max={10} />
                 <SummaryCard icon={<Moon className="h-4 w-4" />} label="Sleep" value={todayLog.sleepQuality} max={10} />
                 <SummaryCard icon={<Brain className="h-4 w-4" />} label="Mood" value={todayLog.mood} max={10} />
@@ -238,8 +238,8 @@ export default function DashboardPage() {
 
             {/* Trends chart */}
             {chartData.length > 1 && (
-              <Card className="p-5">
-                <h3 className="font-semibold mb-4">14-Day Trends</h3>
+            <Card className="p-3 sm:p-5">
+                <h3 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">14-Day Trends</h3>
                 <div className="h-48" role="img" aria-label="Chart showing trends over the last 14 days">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData}>
@@ -346,10 +346,10 @@ export default function DashboardPage() {
 
 function SummaryCard({ icon, label, value, max, unit }: { icon: React.ReactNode; label: string; value: number; max: number; unit?: string }) {
   return (
-    <Card className="p-4 text-center" role="status" aria-label={`${label}: ${value}${unit ?? ''} out of ${max}`}>
-      <div className="flex justify-center text-primary mb-1" aria-hidden="true">{icon}</div>
-      <p className="text-2xl font-bold tabular-nums">{value}{unit ?? ''}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
+    <Card className="p-2.5 sm:p-4 text-center" role="status" aria-label={`${label}: ${value}${unit ?? ''} out of ${max}`}>
+      <div className="flex justify-center text-primary mb-0.5" aria-hidden="true">{icon}</div>
+      <p className="text-xl sm:text-2xl font-bold tabular-nums">{value}{unit ?? ''}</p>
+      <p className="text-[10px] sm:text-xs text-muted-foreground">{label}</p>
     </Card>
   );
 }

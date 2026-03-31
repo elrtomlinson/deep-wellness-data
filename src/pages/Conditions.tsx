@@ -152,7 +152,7 @@ export default function ConditionsPage() {
 
   return (
     <AppLayout>
-      <div className="space-y-8 max-w-2xl mx-auto">
+      <div className="space-y-6 sm:space-y-8 max-w-2xl mx-auto">
         {/* Conditions */}
         <section aria-labelledby="conditions-heading">
           <div className="flex items-center justify-between mb-4">
