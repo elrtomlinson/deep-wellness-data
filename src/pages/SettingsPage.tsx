@@ -2,13 +2,74 @@ import { AppLayout } from '@/components/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Shield, Database, Heart, Brain, FlaskConical } from 'lucide-react';
+import { Shield, Database, Heart, Brain, FlaskConical, Download } from 'lucide-react';
 import { useBrainFog } from '@/contexts/BrainFogContext';
 import { ReminderManager } from '@/components/ReminderManager';
 import { toast } from 'sonner';
 
 export default function SettingsPage() {
   const { brainFogMode, setBrainFogMode } = useBrainFog();
+
+  const KEYS = ['health-conditions', 'health-symptoms', 'health-medications', 'health-treatments', 'health-logs'] as const;
+
+  function download(filename: string, content: string, mime: string) {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  const exportData = (format: 'json' | 'csv') => {
+    const data: Record<string, any[]> = {};
+    let hasData = false;
+    for (const key of KEYS) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) { data[key.replace('health-', '')] = JSON.parse(raw); hasData = true; }
+      } catch { /* skip */ }
+    }
+    if (!hasData) { toast.error('No data to export'); return; }
+
+    const stamp = new Date().toISOString().slice(0, 10);
+
+    if (format === 'json') {
+      download(`chronicle-export-${stamp}.json`, JSON.stringify(data, null, 2), 'application/json');
+      toast.success('JSON exported');
+      return;
+    }
+
+    const logs: any[] = data.logs ?? [];
+    if (logs.length === 0) { toast.error('No logs to export as CSV'); return; }
+
+    const symptoms: any[] = data.symptoms ?? [];
+    const medications: any[] = data.medications ?? [];
+    const symNames = symptoms.map((s: any) => s.name);
+    const medNames = medications.map((m: any) => m.name);
+
+    const headers = ['Date', 'Pain', 'Sleep Hours', 'Sleep Quality', 'Mood', 'Energy %', 'Energy Spent %',
+      ...symNames.map((n: string) => `Sym: ${n}`),
+      ...medNames.map((n: string) => `Med: ${n}`),
+      'Notes'];
+
+    const rows = logs.map((l: any) => {
+      const symVals = symptoms.map((s: any) => {
+        const sl = (l.symptoms ?? []).find((x: any) => x.symptomId === s.id);
+        return sl ? sl.severity : 0;
+      });
+      const medVals = medications.map((m: any) => {
+        const ml = (l.medications ?? []).find((x: any) => x.medicationId === m.id);
+        return ml?.taken ? 'Yes' : 'No';
+      });
+      return [l.date, l.overallPain, l.sleepHours, l.sleepQuality, l.mood, l.energyLevel ?? '', l.energySpent ?? '',
+        ...symVals, ...medVals, `"${(l.notes ?? '').replace(/"/g, '""')}"`].join(',');
+    });
+
+    download(`chronicle-export-${stamp}.csv`, [headers.join(','), ...rows].join('\n'), 'text/csv');
+    toast.success('CSV exported');
+  };
 
   const loadDemoData = () => {
     if (localStorage.getItem('health-conditions')) {
@@ -104,6 +165,24 @@ export default function SettingsPage() {
 
         <Card className="p-5 space-y-3">
           <div className="flex items-center gap-3">
+            <Download className="h-5 w-5 text-primary" aria-hidden="true" />
+            <h3 className="font-semibold">Export Data</h3>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Download all your health data for backup or to share with your healthcare provider.
+          </p>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => exportData('json')}>
+              Export JSON
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
+              Export CSV
+            </Button>
+          </div>
+        </Card>
+
+        <Card className="p-5 space-y-3">
+          <div className="flex items-center gap-3">
             <Database className="h-5 w-5 text-primary" aria-hidden="true" />
             <h3 className="font-semibold">Data</h3>
           </div>
@@ -133,7 +212,6 @@ export default function SettingsPage() {
           <ul className="text-sm text-muted-foreground space-y-1">
             <li>• Medical research papers for your conditions</li>
             <li>• Community insights & top treatments</li>
-            <li>• Data export & backup</li>
           </ul>
         </Card>
       </div>
