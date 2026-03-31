@@ -301,6 +301,9 @@ export default function DashboardPage() {
             {/* Weather correlation */}
             <WeatherCorrelation />
 
+            {/* Medication effectiveness */}
+            <MedicationEffectivenessTracker />
+
             {/* Top symptoms */}
             {todayLog && todayLog.symptoms.length > 0 && (
               <Card className="p-5">
