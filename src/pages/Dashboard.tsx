@@ -201,6 +201,9 @@ export default function DashboardPage() {
           </Card>
         )}
 
+        {/* Flare forecast - always visible */}
+        <FlareForecast />
+
         {/* Weather - always visible */}
         <WeatherWidget />
 
