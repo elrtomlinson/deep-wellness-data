@@ -2,7 +2,7 @@ import { AppLayout } from '@/components/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Shield, Database, Heart, Brain, FlaskConical } from 'lucide-react';
+import { Shield, Database, Heart, Brain, FlaskConical, Download } from 'lucide-react';
 import { useBrainFog } from '@/contexts/BrainFogContext';
 import { ReminderManager } from '@/components/ReminderManager';
 import { toast } from 'sonner';
