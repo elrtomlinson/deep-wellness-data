@@ -10,6 +10,7 @@ const navItems = [
   { to: '/journal', label: 'Journal', icon: BookOpen },
   { to: '/timeline', label: 'Timeline', icon: Calendar },
   { to: '/conditions', label: 'Health', icon: Stethoscope },
+  { to: '/dna', label: 'DNA', icon: Dna },
   { to: '/report', label: 'Report', icon: FileText },
   { to: '/settings', label: 'Settings', icon: Settings },
 ];
