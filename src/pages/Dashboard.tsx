@@ -16,6 +16,7 @@ import { FlareForecast } from '@/components/FlareForecast';
 import { MedicationEffectivenessTracker } from '@/components/MedicationEffectivenessTracker';
 import { TreatmentEffectivenessTracker } from '@/components/TreatmentEffectivenessTracker';
 import { CorrelationAnalysis } from '@/components/CorrelationAnalysis';
+import { TriggerMapping } from '@/components/TriggerMapping';
 import { DnaConditionInsights } from '@/components/DnaConditionInsights';
 
 const CHART_COLORS = [
@@ -320,6 +321,9 @@ export default function DashboardPage() {
                 </div>
               </Card>
             )}
+
+            {/* Trigger Mapping */}
+            <TriggerMapping />
 
             {/* Correlation Analysis */}
             <CorrelationAnalysis days={days} />
