@@ -20,6 +20,11 @@ import { TriggerMapping } from '@/components/TriggerMapping';
 import { DnaConditionInsights } from '@/components/DnaConditionInsights';
 import { SymptomCycles } from '@/components/SymptomCycles';
 import { WeatherCorrelation } from '@/components/WeatherCorrelation';
+import { BrainFogIndex } from '@/components/BrainFogIndex';
+import { HabitExperiments } from '@/components/HabitExperiments';
+import { LagAnalysis } from '@/components/LagAnalysis';
+import { MedicationInteractionAlerts } from '@/components/MedicationInteractionAlerts';
+import { SymptomClustering } from '@/components/SymptomClustering';
 import { Link } from 'react-router-dom';
 
 const CHART_COLORS = [
