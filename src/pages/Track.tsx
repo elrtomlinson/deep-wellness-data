@@ -12,7 +12,7 @@ import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function TrackPage() {
-  const { symptoms, medications, addLog, getLogByDate } = useHealthData();
+  const { symptoms, medications, treatments, addLog, getLogByDate } = useHealthData();
 
   const [currentDate, setCurrentDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const existingLog = getLogByDate(currentDate);
