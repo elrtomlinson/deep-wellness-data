@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Shield, Database, Heart, Brain, FlaskConical } from 'lucide-react';
 import { useBrainFog } from '@/contexts/BrainFogContext';
 import { ReminderManager } from '@/components/ReminderManager';
-import { useHealthData } from '@/hooks/useHealthData';
 import { toast } from 'sonner';
 
 export default function SettingsPage() {
