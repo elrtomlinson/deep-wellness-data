@@ -53,6 +53,15 @@ export default function ConditionsPage() {
     setShowAddMed(false);
   };
 
+  const handleAddTreatment = () => {
+    if (!treatName.trim()) return;
+    addTreatment({ name: treatName.trim(), dosage: treatDosage.trim(), conditionIds: treatConditions, active: true });
+    setTreatName('');
+    setTreatDosage('');
+    setTreatConditions([]);
+    setShowAddTreatment(false);
+  };
+
   const toggleConditionSelection = (id: string, list: string[], setList: (v: string[]) => void) => {
     setList(list.includes(id) ? list.filter(c => c !== id) : [...list, id]);
   };
