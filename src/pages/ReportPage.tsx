@@ -8,6 +8,7 @@ import { AppLayout } from '@/components/AppLayout';
 import { getSeverityLevel } from '@/types/health';
 import { FileText, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import { useWeather } from '@/hooks/useWeather';
 
 type ReportRange = 7 | 14 | 30;
 
