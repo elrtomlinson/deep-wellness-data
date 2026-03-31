@@ -61,7 +61,6 @@ export default function SettingsPage() {
             <h3 className="font-semibold">Coming soon</h3>
           </div>
           <ul className="text-sm text-muted-foreground space-y-1">
-            <li>• Customisable tracking reminders</li>
             <li>• Medical research papers for your conditions</li>
             <li>• Promethease DNA report upload & analysis</li>
             <li>• Community insights & top treatments</li>
