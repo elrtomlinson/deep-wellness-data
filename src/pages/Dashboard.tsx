@@ -228,8 +228,7 @@ export default function DashboardPage() {
               </Card>
             )}
 
-            {/* Weather */}
-            <WeatherWidget />
+
 
             {/* Trends chart */}
             {chartData.length > 1 && (
