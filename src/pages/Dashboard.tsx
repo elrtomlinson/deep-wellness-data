@@ -11,11 +11,8 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import { Activity, Moon, Brain, TrendingUp, AlertCircle, Settings2, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { WeatherWidget } from '@/components/WeatherWidget';
+import { WeatherCorrelation } from '@/components/WeatherCorrelation';
 
 const CHART_COLORS = [
   'hsl(var(--chart-1))',
