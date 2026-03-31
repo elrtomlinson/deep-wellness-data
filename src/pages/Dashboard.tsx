@@ -8,7 +8,7 @@ import { AppLayout } from '@/components/AppLayout';
 import { getSeverityLevel } from '@/types/health';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { Activity, Moon, Brain, TrendingUp, AlertCircle, Settings2 } from 'lucide-react';
+import { Activity, Moon, Brain, TrendingUp, AlertCircle, Settings2, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
