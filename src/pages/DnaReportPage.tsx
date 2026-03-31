@@ -49,9 +49,9 @@ export default function DnaReportPage() {
   }, [setReport]);
 
   const deleteReport = useCallback(() => {
-    setReport(null);
+    removeReport();
     toast.success('DNA report deleted');
-  }, [setReport]);
+  }, [removeReport]);
 
   // Aggregate conditions across all variants
   const allConditions = useMemo(() => {
