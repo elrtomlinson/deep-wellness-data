@@ -5,6 +5,7 @@ export function useHealthData() {
   const [conditions, setConditions] = useLocalStorage<Condition[]>('health-conditions', []);
   const [symptoms, setSymptoms] = useLocalStorage<Symptom[]>('health-symptoms', []);
   const [medications, setMedications] = useLocalStorage<Medication[]>('health-medications', []);
+  const [treatments, setTreatments] = useLocalStorage<Treatment[]>('health-treatments', []);
   const [logs, setLogs] = useLocalStorage<DailyLog[]>('health-logs', []);
 
   const addCondition = (condition: Omit<Condition, 'id' | 'createdAt'>) => {
