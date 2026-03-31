@@ -322,6 +322,9 @@ export default function DashboardPage() {
               </Card>
             )}
 
+            {/* Trigger Mapping */}
+            <TriggerMapping />
+
             {/* Correlation Analysis */}
             <CorrelationAnalysis days={days} />
 
