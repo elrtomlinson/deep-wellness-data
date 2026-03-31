@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { WeatherWidget } from '@/components/WeatherWidget';
 import { WeatherCorrelation } from '@/components/WeatherCorrelation';
+import { FlareForecast } from '@/components/FlareForecast';
 
 const CHART_COLORS = [
   'hsl(var(--chart-1))',
@@ -199,6 +200,9 @@ export default function DashboardPage() {
             )}
           </Card>
         )}
+
+        {/* Flare forecast - always visible */}
+        <FlareForecast />
 
         {/* Weather - always visible */}
         <WeatherWidget />
