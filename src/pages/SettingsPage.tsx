@@ -151,7 +151,6 @@ export default function SettingsPage() {
           <ul className="text-sm text-muted-foreground space-y-1">
             <li>• Medical research papers for your conditions</li>
             <li>• Community insights & top treatments</li>
-            <li>• Data export & backup</li>
           </ul>
         </Card>
       </div>
