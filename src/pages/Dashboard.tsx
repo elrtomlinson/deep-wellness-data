@@ -44,7 +44,9 @@ const CORE_METRICS = [
 
 export default function DashboardPage() {
   const { conditions, symptoms, medications, treatments, logs, getRecentLogs } = useHealthData();
-  const recentLogs = getRecentLogs(14);
+  const RANGE_OPTIONS = [7, 14, 30, 90] as const;
+  const [days, setDays] = useLocalStorage<number>('dashboard-range-days', 14);
+  const recentLogs = getRecentLogs(days);
   const todayStr = format(new Date(), 'yyyy-MM-dd');
   const todayLog = logs.find(l => l.date === todayStr);
 
