@@ -87,6 +87,12 @@ export default function TrackPage() {
     );
   };
 
+  const toggleTreatment = (treatmentId: string) => {
+    setTreatmentLogs(prev =>
+      prev.map(t => t.treatmentId === treatmentId ? { ...t, done: !t.done } : t)
+    );
+  };
+
   const isToday = currentDate === format(new Date(), 'yyyy-MM-dd');
   const displayDate = isToday ? 'Today' : format(new Date(currentDate), 'EEE, MMM d');
 
