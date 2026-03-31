@@ -324,6 +324,9 @@ export default function DashboardPage() {
             {/* Correlation Analysis */}
             <CorrelationAnalysis days={days} />
 
+            {/* DNA Condition Insights */}
+            <DnaConditionInsights />
+
             {/* Medication effectiveness */}
             <MedicationEffectivenessTracker />
 
