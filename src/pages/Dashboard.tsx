@@ -1,28 +1,113 @@
-import { useMemo } from 'react';
-import { format, subDays } from 'date-fns';
+import { useMemo, useState } from 'react';
+import { format } from 'date-fns';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useHealthData } from '@/hooks/useHealthData';
 import { AppLayout } from '@/components/AppLayout';
 import { getSeverityLevel } from '@/types/health';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { Activity, Moon, Brain, TrendingUp, AlertCircle } from 'lucide-react';
+import { Activity, Moon, Brain, TrendingUp, AlertCircle, Settings2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
+
+const CHART_COLORS = [
+  'hsl(var(--chart-1))',
+  'hsl(var(--chart-2))',
+  'hsl(var(--chart-3))',
+  'hsl(var(--chart-4))',
+  'hsl(var(--chart-5))',
+  'hsl(var(--severity-high))',
+  'hsl(var(--severity-moderate))',
+  'hsl(var(--severity-low))',
+];
+
+interface DashboardTracked {
+  symptoms: string[];
+  medications: string[];
+  treatments: string[];
+}
 
 export default function DashboardPage() {
-  const { conditions, symptoms, logs, getRecentLogs } = useHealthData();
+  const { conditions, symptoms, medications, treatments, logs, getRecentLogs } = useHealthData();
   const recentLogs = getRecentLogs(14);
   const todayStr = format(new Date(), 'yyyy-MM-dd');
   const todayLog = logs.find(l => l.date === todayStr);
 
-  const chartData = useMemo(() => {
-    return recentLogs.map(log => ({
-      date: format(new Date(log.date), 'MMM d'),
-      Pain: log.overallPain,
-      Sleep: log.sleepQuality,
-      Mood: log.mood,
+  const [tracked, setTracked] = useLocalStorage<DashboardTracked>('dashboard-tracked', {
+    symptoms: [],
+    medications: [],
+    treatments: [],
+  });
+
+  const [showSettings, setShowSettings] = useState(false);
+
+  const toggleTracked = (category: keyof DashboardTracked, id: string) => {
+    setTracked(prev => ({
+      ...prev,
+      [category]: prev[category].includes(id)
+        ? prev[category].filter(i => i !== id)
+        : [...prev[category], id],
     }));
-  }, [recentLogs]);
+  };
+
+  const chartData = useMemo(() => {
+    return recentLogs.map(log => {
+      const entry: Record<string, string | number> = {
+        date: format(new Date(log.date), 'MMM d'),
+        Pain: log.overallPain,
+        Sleep: log.sleepQuality,
+        Mood: log.mood,
+      };
+
+      tracked.symptoms.forEach(symId => {
+        const sym = symptoms.find(s => s.id === symId);
+        if (!sym) return;
+        const sl = log.symptoms.find(s => s.symptomId === symId);
+        entry[`S: ${sym.name}`] = sl?.severity ?? 0;
+      });
+
+      tracked.medications.forEach(medId => {
+        const med = medications.find(m => m.id === medId);
+        if (!med) return;
+        const ml = log.medications.find(m => m.medicationId === medId);
+        entry[`M: ${med.name}`] = ml?.taken ? 10 : 0;
+      });
+
+      tracked.treatments.forEach(treatId => {
+        const treat = treatments.find(t => t.id === treatId);
+        if (!treat) return;
+        const tl = (log.treatments ?? []).find(t => t.treatmentId === treatId);
+        entry[`T: ${treat.name}`] = tl?.done ? 10 : 0;
+      });
+
+      return entry;
+    });
+  }, [recentLogs, tracked, symptoms, medications, treatments]);
+
+  const extraLines = useMemo(() => {
+    const lines: { key: string; color: string }[] = [];
+    let ci = 0;
+    tracked.symptoms.forEach(id => {
+      const sym = symptoms.find(s => s.id === id);
+      if (sym) lines.push({ key: `S: ${sym.name}`, color: CHART_COLORS[ci++ % CHART_COLORS.length] });
+    });
+    tracked.medications.forEach(id => {
+      const med = medications.find(m => m.id === id);
+      if (med) lines.push({ key: `M: ${med.name}`, color: CHART_COLORS[ci++ % CHART_COLORS.length] });
+    });
+    tracked.treatments.forEach(id => {
+      const treat = treatments.find(t => t.id === id);
+      if (treat) lines.push({ key: `T: ${treat.name}`, color: CHART_COLORS[ci++ % CHART_COLORS.length] });
+    });
+    return lines;
+  }, [tracked, symptoms, medications, treatments]);
 
   // Basic correlation: sleep quality vs pain
   const correlation = useMemo(() => {
@@ -44,11 +129,79 @@ export default function DashboardPage() {
   }, [recentLogs]);
 
   const hasData = conditions.length > 0 || logs.length > 0;
+  const hasTrackableItems = symptoms.length > 0 || medications.length > 0 || treatments.length > 0;
 
   return (
     <AppLayout>
       <div className="max-w-2xl mx-auto space-y-6">
-        <h2 className="text-2xl font-semibold">Dashboard</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-semibold">Dashboard</h2>
+          {hasTrackableItems && (
+            <Button variant="outline" size="sm" onClick={() => setShowSettings(!showSettings)} aria-expanded={showSettings}>
+              <Settings2 className="h-4 w-4 mr-1" aria-hidden="true" />
+              Customise
+            </Button>
+          )}
+        </div>
+
+        {/* Metric selection */}
+        {showSettings && hasTrackableItems && (
+          <Card className="p-5 space-y-4 animate-fade-in">
+            <h3 className="font-semibold text-sm">Track on Dashboard</h3>
+            <p className="text-xs text-muted-foreground">Select symptoms, medications, and treatments to overlay on your trends chart.</p>
+
+            {symptoms.length > 0 && (
+              <fieldset>
+                <legend className="text-sm font-medium mb-2">Symptoms</legend>
+                <div className="flex flex-wrap gap-3">
+                  {symptoms.map(s => (
+                    <label key={s.id} className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox
+                        checked={tracked.symptoms.includes(s.id)}
+                        onCheckedChange={() => toggleTracked('symptoms', s.id)}
+                      />
+                      <span className="text-sm">{s.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            )}
+
+            {medications.length > 0 && (
+              <fieldset>
+                <legend className="text-sm font-medium mb-2">Medications</legend>
+                <div className="flex flex-wrap gap-3">
+                  {medications.map(m => (
+                    <label key={m.id} className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox
+                        checked={tracked.medications.includes(m.id)}
+                        onCheckedChange={() => toggleTracked('medications', m.id)}
+                      />
+                      <span className="text-sm">{m.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            )}
+
+            {treatments.length > 0 && (
+              <fieldset>
+                <legend className="text-sm font-medium mb-2">Treatments</legend>
+                <div className="flex flex-wrap gap-3">
+                  {treatments.map(t => (
+                    <label key={t.id} className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox
+                        checked={tracked.treatments.includes(t.id)}
+                        onCheckedChange={() => toggleTracked('treatments', t.id)}
+                      />
+                      <span className="text-sm">{t.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            )}
+          </Card>
+        )}
 
         {!hasData ? (
           <Card className="p-8 text-center space-y-3">
@@ -78,7 +231,7 @@ export default function DashboardPage() {
             {chartData.length > 1 && (
               <Card className="p-5">
                 <h3 className="font-semibold mb-4">14-Day Trends</h3>
-                <div className="h-48" role="img" aria-label="Chart showing pain, sleep quality, and mood trends over the last 14 days">
+                <div className="h-48" role="img" aria-label="Chart showing trends over the last 14 days">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -95,13 +248,22 @@ export default function DashboardPage() {
                       <Line type="monotone" dataKey="Pain" stroke="hsl(var(--severity-high))" strokeWidth={2} dot={false} />
                       <Line type="monotone" dataKey="Sleep" stroke="hsl(var(--chart-2))" strokeWidth={2} dot={false} />
                       <Line type="monotone" dataKey="Mood" stroke="hsl(var(--chart-4))" strokeWidth={2} dot={false} />
+                      {extraLines.map(line => (
+                        <Line key={line.key} type="monotone" dataKey={line.key} stroke={line.color} strokeWidth={2} dot={false} strokeDasharray="5 3" />
+                      ))}
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="flex gap-4 mt-3 justify-center text-xs">
+                <div className="flex flex-wrap gap-4 mt-3 justify-center text-xs">
                   <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-severity-high inline-block rounded" /> Pain</span>
                   <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-chart-2 inline-block rounded" /> Sleep</span>
                   <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-chart-4 inline-block rounded" /> Mood</span>
+                  {extraLines.map(line => (
+                    <span key={line.key} className="flex items-center gap-1">
+                      <span className="w-3 h-0.5 inline-block rounded" style={{ backgroundColor: line.color }} />
+                      {line.key}
+                    </span>
+                  ))}
                 </div>
               </Card>
             )}

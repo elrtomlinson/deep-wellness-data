@@ -7,12 +7,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { SeveritySlider } from '@/components/SeveritySlider';
 import { useHealthData } from '@/hooks/useHealthData';
 import { AppLayout } from '@/components/AppLayout';
-import { SymptomLog, MedicationLog } from '@/types/health';
+import { SymptomLog, MedicationLog, TreatmentLog } from '@/types/health';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function TrackPage() {
-  const { symptoms, medications, addLog, getLogByDate } = useHealthData();
+  const { symptoms, medications, treatments, addLog, getLogByDate } = useHealthData();
 
   const [currentDate, setCurrentDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const existingLog = getLogByDate(currentDate);
@@ -29,6 +29,9 @@ export default function TrackPage() {
   const [medLogs, setMedLogs] = useState<MedicationLog[]>(
     existingLog?.medications ?? medications.filter(m => m.active).map(m => ({ medicationId: m.id, taken: false }))
   );
+  const [treatmentLogs, setTreatmentLogs] = useState<TreatmentLog[]>(
+    existingLog?.treatments ?? treatments.filter(t => t.active).map(t => ({ treatmentId: t.id, done: false }))
+  );
 
   const changeDate = (days: number) => {
     const d = new Date(currentDate);
@@ -44,6 +47,7 @@ export default function TrackPage() {
       setNotes(log.notes);
       setSymptomLogs(log.symptoms);
       setMedLogs(log.medications);
+      setTreatmentLogs(log.treatments ?? []);
     } else {
       setPain(0);
       setSleepHours(7);
@@ -52,6 +56,7 @@ export default function TrackPage() {
       setNotes('');
       setSymptomLogs(symptoms.map(s => ({ symptomId: s.id, severity: 0 })));
       setMedLogs(medications.filter(m => m.active).map(m => ({ medicationId: m.id, taken: false })));
+      setTreatmentLogs(treatments.filter(t => t.active).map(t => ({ treatmentId: t.id, done: false })));
     }
   };
 
@@ -64,6 +69,7 @@ export default function TrackPage() {
       mood,
       symptoms: symptomLogs,
       medications: medLogs,
+      treatments: treatmentLogs,
       notes,
     });
     toast.success('Log saved!');
@@ -78,6 +84,12 @@ export default function TrackPage() {
   const toggleMed = (medicationId: string) => {
     setMedLogs(prev =>
       prev.map(m => m.medicationId === medicationId ? { ...m, taken: !m.taken } : m)
+    );
+  };
+
+  const toggleTreatment = (treatmentId: string) => {
+    setTreatmentLogs(prev =>
+      prev.map(t => t.treatmentId === treatmentId ? { ...t, done: !t.done } : t)
     );
   };
 
@@ -151,6 +163,30 @@ export default function TrackPage() {
                   <div>
                     <span className="text-sm font-medium">{med.name}</span>
                     {med.dosage && <span className="text-xs text-muted-foreground ml-2">{med.dosage}</span>}
+                  </div>
+                </label>
+              );
+            })}
+          </Card>
+        )}
+
+        {/* Treatments */}
+        {treatmentLogs.length > 0 && (
+          <Card className="p-5 space-y-3">
+            <h3 className="font-semibold">Treatments</h3>
+            {treatmentLogs.map(tl => {
+              const treat = treatments.find(t => t.id === tl.treatmentId);
+              if (!treat) return null;
+              return (
+                <label key={tl.treatmentId} className="flex items-center gap-3 cursor-pointer touch-target">
+                  <Checkbox
+                    checked={tl.done}
+                    onCheckedChange={() => toggleTreatment(tl.treatmentId)}
+                    aria-label={`Did ${treat.name}`}
+                  />
+                  <div>
+                    <span className="text-sm font-medium">{treat.name}</span>
+                    {treat.dosage && <span className="text-xs text-muted-foreground ml-2">{treat.dosage}</span>}
                   </div>
                 </label>
               );
