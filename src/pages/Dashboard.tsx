@@ -327,11 +327,11 @@ export default function DashboardPage() {
   );
 }
 
-function SummaryCard({ icon, label, value, max }: { icon: React.ReactNode; label: string; value: number; max: number }) {
+function SummaryCard({ icon, label, value, max, unit }: { icon: React.ReactNode; label: string; value: number; max: number; unit?: string }) {
   return (
-    <Card className="p-4 text-center" role="status" aria-label={`${label}: ${value} out of ${max}`}>
+    <Card className="p-4 text-center" role="status" aria-label={`${label}: ${value}${unit ?? ''} out of ${max}`}>
       <div className="flex justify-center text-primary mb-1" aria-hidden="true">{icon}</div>
-      <p className="text-2xl font-bold tabular-nums">{value}</p>
+      <p className="text-2xl font-bold tabular-nums">{value}{unit ?? ''}</p>
       <p className="text-xs text-muted-foreground">{label}</p>
     </Card>
   );

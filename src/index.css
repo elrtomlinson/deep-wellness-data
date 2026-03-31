@@ -131,3 +131,27 @@
     @apply min-h-[44px] min-w-[44px];
   }
 }
+
+/* Brain Fog Mode: high contrast, larger text, simplified UI */
+.brain-fog-mode {
+  --foreground: 160 20% 5%;
+  --card: 40 30% 98%;
+  --primary: 158 50% 32%;
+  font-size: 1.1rem;
+}
+
+.brain-fog-mode .text-sm {
+  font-size: 1rem;
+}
+
+.brain-fog-mode .text-xs {
+  font-size: 0.875rem;
+}
+
+.brain-fog-mode .text-lg {
+  font-size: 1.35rem;
+}
+
+.brain-fog-mode .text-2xl {
+  font-size: 2rem;
+}
