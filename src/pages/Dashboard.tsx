@@ -18,6 +18,7 @@ import { TreatmentEffectivenessTracker } from '@/components/TreatmentEffectivene
 import { CorrelationAnalysis } from '@/components/CorrelationAnalysis';
 import { TriggerMapping } from '@/components/TriggerMapping';
 import { DnaConditionInsights } from '@/components/DnaConditionInsights';
+import { SymptomCycles } from '@/components/SymptomCycles';
 
 const CHART_COLORS = [
   'hsl(var(--chart-1))',
@@ -324,6 +325,9 @@ export default function DashboardPage() {
 
             {/* Trigger Mapping */}
             <TriggerMapping />
+
+            {/* Symptom Cycles */}
+            <SymptomCycles />
 
             {/* Correlation Analysis */}
             <CorrelationAnalysis days={days} />
