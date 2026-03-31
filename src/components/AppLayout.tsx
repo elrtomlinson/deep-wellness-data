@@ -5,9 +5,11 @@ import { cn } from '@/lib/utils';
 import { useBrainFog } from '@/contexts/BrainFogContext';
 
 const navItems = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/', label: 'Home', icon: LayoutDashboard },
   { to: '/track', label: 'Track', icon: PenLine },
-  { to: '/conditions', label: 'Conditions', icon: Stethoscope },
+  { to: '/journal', label: 'Journal', icon: BookOpen },
+  { to: '/timeline', label: 'Timeline', icon: Calendar },
+  { to: '/conditions', label: 'Health', icon: Stethoscope },
   { to: '/report', label: 'Report', icon: FileText },
   { to: '/settings', label: 'Settings', icon: Settings },
 ];

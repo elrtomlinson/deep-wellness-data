@@ -27,6 +27,8 @@ const App = () => (
             <Route path="/track" element={<TrackPage />} />
             <Route path="/conditions" element={<ConditionsPage />} />
             <Route path="/report" element={<ReportPage />} />
+            <Route path="/timeline" element={<TimelinePage />} />
+            <Route path="/journal" element={<JournalPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
