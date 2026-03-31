@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Shield, Database, Heart, Brain } from 'lucide-react';
 import { useBrainFog } from '@/contexts/BrainFogContext';
+import { ReminderManager } from '@/components/ReminderManager';
 
 export default function SettingsPage() {
   const { brainFogMode, setBrainFogMode } = useBrainFog();
