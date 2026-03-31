@@ -6,16 +6,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, X, Pill } from 'lucide-react';
+import { Plus, X, Pill, Heart } from 'lucide-react';
 import { useHealthData } from '@/hooks/useHealthData';
 import { AppLayout } from '@/components/AppLayout';
 
 export default function ConditionsPage() {
-  const { conditions, addCondition, removeCondition, symptoms, addSymptom, removeSymptom, medications, addMedication, removeMedication } = useHealthData();
+  const { conditions, addCondition, removeCondition, symptoms, addSymptom, removeSymptom, medications, addMedication, removeMedication, treatments, addTreatment, removeTreatment } = useHealthData();
 
   const [showAddCondition, setShowAddCondition] = useState(false);
   const [showAddSymptom, setShowAddSymptom] = useState(false);
   const [showAddMed, setShowAddMed] = useState(false);
+  const [showAddTreatment, setShowAddTreatment] = useState(false);
   const [condName, setCondName] = useState('');
   const [condNotes, setCondNotes] = useState('');
   const [symName, setSymName] = useState('');
@@ -23,6 +24,9 @@ export default function ConditionsPage() {
   const [medName, setMedName] = useState('');
   const [medDosage, setMedDosage] = useState('');
   const [medConditions, setMedConditions] = useState<string[]>([]);
+  const [treatName, setTreatName] = useState('');
+  const [treatDosage, setTreatDosage] = useState('');
+  const [treatConditions, setTreatConditions] = useState<string[]>([]);
 
   const handleAddCondition = () => {
     if (!condName.trim()) return;
