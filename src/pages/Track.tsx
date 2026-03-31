@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { SeveritySlider } from '@/components/SeveritySlider';
 import { useHealthData } from '@/hooks/useHealthData';
 import { AppLayout } from '@/components/AppLayout';
-import { SymptomLog, MedicationLog } from '@/types/health';
+import { SymptomLog, MedicationLog, TreatmentLog } from '@/types/health';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 
