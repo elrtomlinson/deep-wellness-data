@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { WeatherWidget } from '@/components/WeatherWidget';
 import { WeatherCorrelation } from '@/components/WeatherCorrelation';
 import { FlareForecast } from '@/components/FlareForecast';
+import { MedicationEffectivenessTracker } from '@/components/MedicationEffectivenessTracker';
 
 const CHART_COLORS = [
   'hsl(var(--chart-1))',
