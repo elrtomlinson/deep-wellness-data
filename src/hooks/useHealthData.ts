@@ -1,10 +1,11 @@
 import { useLocalStorage } from './useLocalStorage';
-import { Condition, Symptom, Medication, DailyLog } from '@/types/health';
+import { Condition, Symptom, Medication, Treatment, DailyLog } from '@/types/health';
 
 export function useHealthData() {
   const [conditions, setConditions] = useLocalStorage<Condition[]>('health-conditions', []);
   const [symptoms, setSymptoms] = useLocalStorage<Symptom[]>('health-symptoms', []);
   const [medications, setMedications] = useLocalStorage<Medication[]>('health-medications', []);
+  const [treatments, setTreatments] = useLocalStorage<Treatment[]>('health-treatments', []);
   const [logs, setLogs] = useLocalStorage<DailyLog[]>('health-logs', []);
 
   const addCondition = (condition: Omit<Condition, 'id' | 'createdAt'>) => {
@@ -52,6 +53,16 @@ export function useHealthData() {
     setMedications(prev => prev.filter(m => m.id !== id));
   };
 
+  const addTreatment = (treatment: Omit<Treatment, 'id'>) => {
+    const newTreatment: Treatment = { ...treatment, id: crypto.randomUUID() };
+    setTreatments(prev => [...prev, newTreatment]);
+    return newTreatment;
+  };
+
+  const removeTreatment = (id: string) => {
+    setTreatments(prev => prev.filter(t => t.id !== id));
+  };
+
   const addLog = (log: Omit<DailyLog, 'id' | 'createdAt'>) => {
     const newLog: DailyLog = {
       ...log,
@@ -79,6 +90,7 @@ export function useHealthData() {
     conditions, setConditions, addCondition, removeCondition,
     symptoms, setSymptoms, addSymptom, removeSymptom,
     medications, setMedications, addMedication, removeMedication,
+    treatments, setTreatments, addTreatment, removeTreatment,
     logs, addLog, getLogByDate, getRecentLogs,
   };
 }
