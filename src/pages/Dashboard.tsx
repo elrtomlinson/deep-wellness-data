@@ -305,6 +305,9 @@ export default function DashboardPage() {
             {/* Medication effectiveness */}
             <MedicationEffectivenessTracker />
 
+            {/* Treatment effectiveness */}
+            <TreatmentEffectivenessTracker />
+
             {/* Top symptoms */}
             {todayLog && todayLog.symptoms.length > 0 && (
               <Card className="p-5">
