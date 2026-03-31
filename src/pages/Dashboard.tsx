@@ -332,22 +332,31 @@ export default function DashboardPage() {
             <DashboardSection title="Patterns & Triggers" defaultOpen={true}>
               <TriggerMapping />
               <SymptomCycles />
+              <SymptomClustering />
             </DashboardSection>
 
-            {/* ━━━ SECTION 5: Deep Analytics (collapsible) ━━━ */}
+            {/* ━━━ SECTION 5: Cognitive & Behavioral ━━━ */}
+            <DashboardSection title="Cognitive & Experiments" defaultOpen={false}>
+              <BrainFogIndex />
+              <HabitExperiments />
+            </DashboardSection>
+
+            {/* ━━━ SECTION 6: Deep Analytics (collapsible) ━━━ */}
             <DashboardSection title="Analytics" defaultOpen={false}>
+              <LagAnalysis days={days} />
               <CorrelationAnalysis days={days} />
+              <MedicationInteractionAlerts />
               <WeatherCorrelation days={days} />
               <WeatherWidget />
             </DashboardSection>
 
-            {/* ━━━ SECTION 6: Treatment Effectiveness (collapsible) ━━━ */}
+            {/* ━━━ SECTION 7: Treatment Effectiveness (collapsible) ━━━ */}
             <DashboardSection title="Treatment Insights" defaultOpen={false}>
               <MedicationEffectivenessTracker />
               <TreatmentEffectivenessTracker />
             </DashboardSection>
 
-            {/* ━━━ SECTION 7: Genetic (collapsible, least-used) ━━━ */}
+            {/* ━━━ SECTION 8: Genetic (collapsible, least-used) ━━━ */}
             <DashboardSection title="Genetic Insights" defaultOpen={false}>
               <DnaConditionInsights />
             </DashboardSection>
