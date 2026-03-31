@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Shield, Database, Heart, Brain } from 'lucide-react';
 import { useBrainFog } from '@/contexts/BrainFogContext';
+import { ReminderManager } from '@/components/ReminderManager';
 
 export default function SettingsPage() {
   const { brainFogMode, setBrainFogMode } = useBrainFog();
@@ -31,6 +32,9 @@ export default function SettingsPage() {
           </div>
         </Card>
 
+        {/* Medication Reminders */}
+        <ReminderManager />
+
         <Card className="p-5 space-y-3">
           <div className="flex items-center gap-3">
             <Shield className="h-5 w-5 text-primary" aria-hidden="true" />
@@ -57,7 +61,6 @@ export default function SettingsPage() {
             <h3 className="font-semibold">Coming soon</h3>
           </div>
           <ul className="text-sm text-muted-foreground space-y-1">
-            <li>• Customisable tracking reminders</li>
             <li>• Medical research papers for your conditions</li>
             <li>• Promethease DNA report upload & analysis</li>
             <li>• Community insights & top treatments</li>

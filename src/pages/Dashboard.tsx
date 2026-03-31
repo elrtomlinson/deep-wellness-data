@@ -11,11 +11,8 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import { Activity, Moon, Brain, TrendingUp, AlertCircle, Settings2, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { WeatherWidget } from '@/components/WeatherWidget';
+import { WeatherCorrelation } from '@/components/WeatherCorrelation';
 
 const CHART_COLORS = [
   'hsl(var(--chart-1))',
@@ -228,6 +225,9 @@ export default function DashboardPage() {
               </Card>
             )}
 
+            {/* Weather */}
+            <WeatherWidget />
+
             {/* Trends chart */}
             {chartData.length > 1 && (
               <Card className="p-5">
@@ -290,6 +290,9 @@ export default function DashboardPage() {
                 </div>
               </Card>
             )}
+
+            {/* Weather correlation */}
+            <WeatherCorrelation />
 
             {/* Top symptoms */}
             {todayLog && todayLog.symptoms.length > 0 && (

@@ -8,6 +8,7 @@ import { AppLayout } from '@/components/AppLayout';
 import { getSeverityLevel } from '@/types/health';
 import { FileText, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import { useWeather } from '@/hooks/useWeather';
 
 type ReportRange = 7 | 14 | 30;
 
@@ -15,8 +16,10 @@ export default function ReportPage() {
   const { conditions, symptoms, medications, treatments, logs, getRecentLogs } = useHealthData();
   const [range, setRange] = useState<ReportRange>(14);
   const [copied, setCopied] = useState(false);
+  const { getRecentWeather, hasData: hasWeather } = useWeather();
 
   const recentLogs = getRecentLogs(range);
+  const recentWeather = getRecentWeather(range);
 
   const report = useMemo(() => {
     if (recentLogs.length === 0) return null;
@@ -157,6 +160,36 @@ export default function ReportPage() {
     }
 
     lines.push('');
+
+    // --- Environmental factors ---
+    if (hasWeather && recentWeather.length > 0) {
+      const matchedDays = recentWeather.filter(w => recentLogs.some(l => l.date === w.date));
+      if (matchedDays.length > 0) {
+        const avgPressure = matchedDays.reduce((s, w) => s + w.pressure, 0) / matchedDays.length;
+        const avgHumidity = matchedDays.reduce((s, w) => s + w.humidity, 0) / matchedDays.length;
+        const maxPressureDrop = Math.min(...matchedDays.map(w => w.pressureChange));
+        const maxPressureRise = Math.max(...matchedDays.map(w => w.pressureChange));
+
+        lines.push('\n── ENVIRONMENTAL FACTORS ──');
+        lines.push(`Average barometric pressure: ${avgPressure.toFixed(0)} hPa`);
+        lines.push(`Average humidity: ${avgHumidity.toFixed(0)}%`);
+        lines.push(`Largest pressure drop: ${maxPressureDrop.toFixed(1)} hPa`);
+        lines.push(`Largest pressure rise: +${maxPressureRise.toFixed(1)} hPa`);
+
+        // Check if big pressure changes correlate with high pain days
+        const highPainDays = recentLogs.filter(l => l.overallPain >= 6);
+        const highPainWithPressure = highPainDays.filter(l => {
+          const w = matchedDays.find(w => w.date === l.date);
+          return w && Math.abs(w.pressureChange) > 3;
+        });
+        if (highPainDays.length > 0 && highPainWithPressure.length > 0) {
+          const pct = Math.round((highPainWithPressure.length / highPainDays.length) * 100);
+          lines.push(`Note: ${pct}% of high-pain days coincided with significant barometric pressure changes (>3 hPa).`);
+        }
+      }
+    }
+
+    lines.push('');
     lines.push('── RECOMMENDATION ──');
     lines.push('This data summary is auto-generated from patient self-reported logs.');
     lines.push('Please review with patient to discuss treatment adjustments.\n');
@@ -167,7 +200,7 @@ export default function ReportPage() {
       avgPain, avgSleep, avgMood, avgEnergy,
       topSymptoms, medReport, treatReport, topSideEffects,
     };
-  }, [recentLogs, range, conditions, symptoms, medications, treatments]);
+  }, [recentLogs, range, conditions, symptoms, medications, treatments, recentWeather, hasWeather]);
 
   const copyReport = async () => {
     if (!report) return;
