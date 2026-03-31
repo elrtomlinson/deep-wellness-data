@@ -32,6 +32,9 @@ export default function SettingsPage() {
           </div>
         </Card>
 
+        {/* Medication Reminders */}
+        <ReminderManager />
+
         <Card className="p-5 space-y-3">
           <div className="flex items-center gap-3">
             <Shield className="h-5 w-5 text-primary" aria-hidden="true" />
