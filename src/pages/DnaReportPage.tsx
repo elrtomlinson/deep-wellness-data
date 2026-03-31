@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AppLayout } from '@/components/AppLayout';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useIndexedDB } from '@/hooks/useIndexedDB';
 import { parsePromethease, cleanHtml, DnaReport, DnaVariant } from '@/lib/promethease-parser';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
