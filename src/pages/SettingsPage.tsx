@@ -10,6 +10,50 @@ import { toast } from 'sonner';
 
 export default function SettingsPage() {
   const { brainFogMode, setBrainFogMode } = useBrainFog();
+  const { addCondition, addSymptom, addMedication, addTreatment, addLog, conditions } = useHealthData();
+
+  const loadDemoData = () => {
+    if (conditions.length > 0) {
+      toast.error('Data already exists. Clear your browser data first.');
+      return;
+    }
+    const c1 = addCondition({ name: 'Fibromyalgia', notes: 'Chronic widespread pain' });
+    const c2 = addCondition({ name: 'Migraine', notes: 'Episodic with aura' });
+    const s1 = addSymptom({ name: 'Joint Pain', conditionIds: [c1.id] });
+    const s2 = addSymptom({ name: 'Headache', conditionIds: [c2.id] });
+    const s3 = addSymptom({ name: 'Fatigue', conditionIds: [c1.id, c2.id] });
+    const m1 = addMedication({ name: 'Ibuprofen', dosage: '400mg', conditionIds: [c1.id], active: true });
+    const m2 = addMedication({ name: 'Sumatriptan', dosage: '50mg', conditionIds: [c2.id], active: true });
+    const t1 = addTreatment({ name: 'Yoga', dosage: '30 min', conditionIds: [c1.id], active: true });
+
+    for (let i = 20; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const date = d.toISOString().slice(0, 10);
+      const pain = Math.round(3 + Math.random() * 5);
+      addLog({
+        date,
+        overallPain: pain,
+        sleepHours: +(5 + Math.random() * 3).toFixed(1),
+        sleepQuality: Math.round(4 + Math.random() * 4),
+        mood: Math.round(10 - pain + Math.random() * 2),
+        energyLevel: Math.round(30 + Math.random() * 50),
+        energySpent: Math.round(20 + Math.random() * 40),
+        symptoms: [
+          { symptomId: s1.id, severity: Math.round(2 + Math.random() * 6) },
+          { symptomId: s2.id, severity: Math.round(Math.random() * 8) },
+          { symptomId: s3.id, severity: Math.round(3 + Math.random() * 5) },
+        ],
+        medications: [
+          { medicationId: m1.id, taken: Math.random() > 0.2 },
+          { medicationId: m2.id, taken: Math.random() > 0.4 },
+        ],
+        treatments: [{ treatmentId: t1.id, done: Math.random() > 0.3 }],
+        sideEffects: [],
+        notes: '',
+      });
+    }
+    toast.success('Demo data loaded! Check the Dashboard.');
+  };
 
   return (
     <AppLayout>
