@@ -69,6 +69,7 @@ export default function TrackPage() {
       mood,
       symptoms: symptomLogs,
       medications: medLogs,
+      treatments: treatmentLogs,
       notes,
     });
     toast.success('Log saved!');
