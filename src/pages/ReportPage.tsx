@@ -16,8 +16,10 @@ export default function ReportPage() {
   const { conditions, symptoms, medications, treatments, logs, getRecentLogs } = useHealthData();
   const [range, setRange] = useState<ReportRange>(14);
   const [copied, setCopied] = useState(false);
+  const { getRecentWeather, hasData: hasWeather } = useWeather();
 
   const recentLogs = getRecentLogs(range);
+  const recentWeather = getRecentWeather(range);
 
   const report = useMemo(() => {
     if (recentLogs.length === 0) return null;
