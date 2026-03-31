@@ -10,6 +10,7 @@ import ConditionsPage from "./pages/Conditions";
 import ReportPage from "./pages/ReportPage";
 import TimelinePage from "./pages/TimelinePage";
 import JournalPage from "./pages/JournalPage";
+import DnaReportPage from "./pages/DnaReportPage";
 import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/report" element={<ReportPage />} />
             <Route path="/timeline" element={<TimelinePage />} />
             <Route path="/journal" element={<JournalPage />} />
+            <Route path="/dna" element={<DnaReportPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

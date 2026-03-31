@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, PenLine, Stethoscope, FileText, Settings, Calendar, BookOpen } from 'lucide-react';
+import { LayoutDashboard, PenLine, Stethoscope, FileText, Settings, Calendar, BookOpen, Dna } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBrainFog } from '@/contexts/BrainFogContext';
 
@@ -10,6 +10,7 @@ const navItems = [
   { to: '/journal', label: 'Journal', icon: BookOpen },
   { to: '/timeline', label: 'Timeline', icon: Calendar },
   { to: '/conditions', label: 'Health', icon: Stethoscope },
+  { to: '/dna', label: 'DNA', icon: Dna },
   { to: '/report', label: 'Report', icon: FileText },
   { to: '/settings', label: 'Settings', icon: Settings },
 ];
@@ -42,8 +43,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
 
-      <nav aria-label="Main navigation" className="border-t bg-card sticky bottom-0 z-40">
-        <ul className="container flex justify-around py-1" role="list">
+      <nav aria-label="Main navigation" className="border-t bg-card sticky bottom-0 z-40 overflow-x-auto">
+        <ul className="container flex py-1 min-w-max" role="list">
           {items.map(({ to, label, icon: Icon }) => {
             const active = location.pathname === to;
             return (
