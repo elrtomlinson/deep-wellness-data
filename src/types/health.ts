@@ -37,6 +37,7 @@ export interface DailyLog {
   mood: number; // 0-10
   symptoms: SymptomLog[];
   medications: MedicationLog[];
+  treatments: TreatmentLog[];
   notes: string;
   createdAt: string;
 }
@@ -49,6 +50,11 @@ export interface SymptomLog {
 export interface MedicationLog {
   medicationId: string;
   taken: boolean;
+}
+
+export interface TreatmentLog {
+  treatmentId: string;
+  done: boolean;
 }
 
 export type SeverityLevel = 'none' | 'low' | 'moderate' | 'high' | 'severe';
