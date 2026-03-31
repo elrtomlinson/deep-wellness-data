@@ -221,7 +221,7 @@ export default function DashboardPage() {
           <>
             {/* Today's summary */}
             {todayLog ? (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" role="group" aria-label="Today's summary">
+              <div className="grid grid-cols-4 gap-2 sm:gap-3" role="group" aria-label="Today's summary">
                 <SummaryCard icon={<Activity className="h-4 w-4" />} label="Pain" value={todayLog.overallPain} max={10} />
                 <SummaryCard icon={<Moon className="h-4 w-4" />} label="Sleep" value={todayLog.sleepQuality} max={10} />
                 <SummaryCard icon={<Brain className="h-4 w-4" />} label="Mood" value={todayLog.mood} max={10} />
