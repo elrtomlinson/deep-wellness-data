@@ -10,6 +10,67 @@ import { toast } from 'sonner';
 export default function SettingsPage() {
   const { brainFogMode, setBrainFogMode } = useBrainFog();
 
+  const KEYS = ['health-conditions', 'health-symptoms', 'health-medications', 'health-treatments', 'health-logs'] as const;
+
+  function download(filename: string, content: string, mime: string) {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  const exportData = (format: 'json' | 'csv') => {
+    const data: Record<string, any[]> = {};
+    let hasData = false;
+    for (const key of KEYS) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) { data[key.replace('health-', '')] = JSON.parse(raw); hasData = true; }
+      } catch { /* skip */ }
+    }
+    if (!hasData) { toast.error('No data to export'); return; }
+
+    const stamp = new Date().toISOString().slice(0, 10);
+
+    if (format === 'json') {
+      download(`chronicle-export-${stamp}.json`, JSON.stringify(data, null, 2), 'application/json');
+      toast.success('JSON exported');
+      return;
+    }
+
+    const logs: any[] = data.logs ?? [];
+    if (logs.length === 0) { toast.error('No logs to export as CSV'); return; }
+
+    const symptoms: any[] = data.symptoms ?? [];
+    const medications: any[] = data.medications ?? [];
+    const symNames = symptoms.map((s: any) => s.name);
+    const medNames = medications.map((m: any) => m.name);
+
+    const headers = ['Date', 'Pain', 'Sleep Hours', 'Sleep Quality', 'Mood', 'Energy %', 'Energy Spent %',
+      ...symNames.map((n: string) => `Sym: ${n}`),
+      ...medNames.map((n: string) => `Med: ${n}`),
+      'Notes'];
+
+    const rows = logs.map((l: any) => {
+      const symVals = symptoms.map((s: any) => {
+        const sl = (l.symptoms ?? []).find((x: any) => x.symptomId === s.id);
+        return sl ? sl.severity : 0;
+      });
+      const medVals = medications.map((m: any) => {
+        const ml = (l.medications ?? []).find((x: any) => x.medicationId === m.id);
+        return ml?.taken ? 'Yes' : 'No';
+      });
+      return [l.date, l.overallPain, l.sleepHours, l.sleepQuality, l.mood, l.energyLevel ?? '', l.energySpent ?? '',
+        ...symVals, ...medVals, `"${(l.notes ?? '').replace(/"/g, '""')}"`].join(',');
+    });
+
+    download(`chronicle-export-${stamp}.csv`, [headers.join(','), ...rows].join('\n'), 'text/csv');
+    toast.success('CSV exported');
+  };
+
   const loadDemoData = () => {
     if (localStorage.getItem('health-conditions')) {
       toast.error('Data already exists. Clear your browser data first.');
