@@ -298,10 +298,16 @@ export default function ReportPage() {
             <Card className="p-5 space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-sm">SBAR Report</h3>
-                <Button variant="outline" size="sm" onClick={copyReport}>
-                  {copied ? <Check className="h-4 w-4 mr-1" /> : <Copy className="h-4 w-4 mr-1" />}
-                  {copied ? 'Copied' : 'Copy'}
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={downloadPdf}>
+                    <Download className="h-4 w-4 mr-1" />
+                    PDF
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={copyReport}>
+                    {copied ? <Check className="h-4 w-4 mr-1" /> : <Copy className="h-4 w-4 mr-1" />}
+                    {copied ? 'Copied' : 'Copy'}
+                  </Button>
+                </div>
               </div>
               <pre className="text-xs leading-relaxed whitespace-pre-wrap font-sans text-foreground bg-muted/50 p-4 rounded-lg overflow-auto max-h-[60vh]">
                 {report.text}
