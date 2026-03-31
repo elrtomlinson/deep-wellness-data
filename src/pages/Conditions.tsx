@@ -9,9 +9,35 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, X, Pill, Heart } from 'lucide-react';
 import { useHealthData } from '@/hooks/useHealthData';
 import { AppLayout } from '@/components/AppLayout';
+import { ConditionPicker } from '@/components/ConditionPicker';
+import { SearchablePicker } from '@/components/SearchablePicker';
+import {
+  getAllPredefinedSymptoms,
+  getAllPredefinedMedications,
+  getAllPredefinedTreatments,
+  PREDEFINED_CONDITIONS,
+  type PredefinedCondition,
+} from '@/data/predefinedConditions';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+
+const allSymptoms = getAllPredefinedSymptoms();
+const allMedications = getAllPredefinedMedications();
+const allTreatments = getAllPredefinedTreatments();
 
 export default function ConditionsPage() {
-  const { conditions, addCondition, removeCondition, symptoms, addSymptom, removeSymptom, medications, addMedication, removeMedication, treatments, addTreatment, removeTreatment } = useHealthData();
+  const {
+    conditions, addCondition, removeCondition,
+    symptoms, addSymptom, removeSymptom,
+    medications, addMedication, removeMedication,
+    treatments, addTreatment, removeTreatment,
+  } = useHealthData();
 
   const [showAddCondition, setShowAddCondition] = useState(false);
   const [showAddSymptom, setShowAddSymptom] = useState(false);
@@ -28,9 +54,67 @@ export default function ConditionsPage() {
   const [treatDosage, setTreatDosage] = useState('');
   const [treatConditions, setTreatConditions] = useState<string[]>([]);
 
+  // Auto-populate dialog state
+  const [pendingCondition, setPendingCondition] = useState<PredefinedCondition | null>(null);
+  const [autoAddSymptoms, setAutoAddSymptoms] = useState(true);
+  const [autoAddMeds, setAutoAddMeds] = useState(true);
+  const [autoAddTreats, setAutoAddTreats] = useState(true);
+
   const handleAddCondition = () => {
     if (!condName.trim()) return;
     addCondition({ name: condName.trim(), notes: condNotes.trim() });
+    setCondName('');
+    setCondNotes('');
+    setShowAddCondition(false);
+  };
+
+  const handleSelectPredefinedCondition = (cond: PredefinedCondition) => {
+    setCondName(cond.name);
+    // If the condition has associated data, offer to auto-populate
+    if (cond.symptoms.length > 0 || cond.medications.length > 0 || cond.treatments.length > 0) {
+      setPendingCondition(cond);
+      setAutoAddSymptoms(true);
+      setAutoAddMeds(true);
+      setAutoAddTreats(true);
+    }
+  };
+
+  const handleConfirmAutoPopulate = () => {
+    if (!pendingCondition) return;
+    // Add the condition first
+    const newCond = addCondition({ name: pendingCondition.name, notes: condNotes.trim() });
+
+    if (autoAddSymptoms) {
+      const existingNames = symptoms.map(s => s.name);
+      pendingCondition.symptoms.forEach(symName => {
+        if (!existingNames.includes(symName)) {
+          addSymptom({ name: symName, conditionIds: [newCond.id] });
+          existingNames.push(symName);
+        }
+      });
+    }
+
+    if (autoAddMeds) {
+      const existingNames = medications.map(m => m.name);
+      pendingCondition.medications.forEach(medName => {
+        if (!existingNames.includes(medName)) {
+          addMedication({ name: medName, dosage: '', conditionIds: [newCond.id], active: true });
+          existingNames.push(medName);
+        }
+      });
+    }
+
+    if (autoAddTreats) {
+      const existingNames = treatments.map(t => t.name);
+      pendingCondition.treatments.forEach(treatName => {
+        if (!existingNames.includes(treatName)) {
+          addTreatment({ name: treatName, dosage: '', conditionIds: [newCond.id], active: true });
+          existingNames.push(treatName);
+        }
+      });
+    }
+
+    setPendingCondition(null);
     setCondName('');
     setCondNotes('');
     setShowAddCondition(false);
@@ -83,7 +167,12 @@ export default function ConditionsPage() {
             <Card className="p-4 mb-4 space-y-3 animate-fade-in">
               <div>
                 <Label htmlFor="cond-name">Condition name</Label>
-                <Input id="cond-name" value={condName} onChange={e => setCondName(e.target.value)} placeholder="e.g. Fibromyalgia" autoFocus />
+                <ConditionPicker
+                  inputValue={condName}
+                  onInputChange={setCondName}
+                  onSelect={handleSelectPredefinedCondition}
+                  existingNames={conditions.map(c => c.name)}
+                />
               </div>
               <div>
                 <Label htmlFor="cond-notes">Notes (optional)</Label>
@@ -129,7 +218,14 @@ export default function ConditionsPage() {
             <Card className="p-4 mb-4 space-y-3 animate-fade-in">
               <div>
                 <Label htmlFor="sym-name">Symptom name</Label>
-                <Input id="sym-name" value={symName} onChange={e => setSymName(e.target.value)} placeholder="e.g. Fatigue" autoFocus />
+                <SearchablePicker
+                  items={allSymptoms}
+                  inputValue={symName}
+                  onInputChange={setSymName}
+                  onSelect={(item) => setSymName(item)}
+                  existingItems={symptoms.map(s => s.name)}
+                  placeholder="Search symptoms or type custom..."
+                />
               </div>
               {conditions.length > 0 && (
                 <fieldset>
@@ -193,7 +289,14 @@ export default function ConditionsPage() {
             <Card className="p-4 mb-4 space-y-3 animate-fade-in">
               <div>
                 <Label htmlFor="med-name">Medication name</Label>
-                <Input id="med-name" value={medName} onChange={e => setMedName(e.target.value)} placeholder="e.g. Amitriptyline" autoFocus />
+                <SearchablePicker
+                  items={allMedications}
+                  inputValue={medName}
+                  onInputChange={setMedName}
+                  onSelect={(item) => setMedName(item)}
+                  existingItems={medications.map(m => m.name)}
+                  placeholder="Search medications or type custom..."
+                />
               </div>
               <div>
                 <Label htmlFor="med-dosage">Dosage</Label>
@@ -258,7 +361,14 @@ export default function ConditionsPage() {
             <Card className="p-4 mb-4 space-y-3 animate-fade-in">
               <div>
                 <Label htmlFor="treat-name">Treatment name</Label>
-                <Input id="treat-name" value={treatName} onChange={e => setTreatName(e.target.value)} placeholder="e.g. Physical therapy" autoFocus />
+                <SearchablePicker
+                  items={allTreatments}
+                  inputValue={treatName}
+                  onInputChange={setTreatName}
+                  onSelect={(item) => setTreatName(item)}
+                  existingItems={treatments.map(t => t.name)}
+                  placeholder="Search treatments or type custom..."
+                />
               </div>
               <div>
                 <Label htmlFor="treat-dosage">Details</Label>
@@ -309,6 +419,44 @@ export default function ConditionsPage() {
           )}
         </section>
       </div>
+
+      {/* Auto-populate dialog */}
+      <Dialog open={!!pendingCondition} onOpenChange={(open) => !open && setPendingCondition(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add related data for {pendingCondition?.name}?</DialogTitle>
+            <DialogDescription>
+              This condition has predefined symptoms, medications, and treatments. Select what you'd like to add automatically.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            {pendingCondition && pendingCondition.symptoms.length > 0 && (
+              <label className="flex items-center gap-2 cursor-pointer">
+                <Checkbox checked={autoAddSymptoms} onCheckedChange={(v) => setAutoAddSymptoms(!!v)} />
+                <span className="text-sm">Add {pendingCondition.symptoms.length} symptoms</span>
+              </label>
+            )}
+            {pendingCondition && pendingCondition.medications.length > 0 && (
+              <label className="flex items-center gap-2 cursor-pointer">
+                <Checkbox checked={autoAddMeds} onCheckedChange={(v) => setAutoAddMeds(!!v)} />
+                <span className="text-sm">Add {pendingCondition.medications.length} medications</span>
+              </label>
+            )}
+            {pendingCondition && pendingCondition.treatments.length > 0 && (
+              <label className="flex items-center gap-2 cursor-pointer">
+                <Checkbox checked={autoAddTreats} onCheckedChange={(v) => setAutoAddTreats(!!v)} />
+                <span className="text-sm">Add {pendingCondition.treatments.length} treatments</span>
+              </label>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => { setPendingCondition(null); handleAddCondition(); }}>
+              Just add condition
+            </Button>
+            <Button onClick={handleConfirmAutoPopulate}>Add all selected</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 }
