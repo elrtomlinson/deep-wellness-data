@@ -104,6 +104,18 @@ export default function SettingsPage() {
 
         <Card className="p-5 space-y-3">
           <div className="flex items-center gap-3">
+            <FlaskConical className="h-5 w-5 text-primary" aria-hidden="true" />
+            <h3 className="font-semibold">Demo Data</h3>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Load sample conditions, symptoms, medications, and 21 days of logs to explore the dashboard.
+          </p>
+          <Button variant="outline" size="sm" onClick={loadDemoData}>
+            Load demo data
+          </Button>
+        </Card>
+
+          <div className="flex items-center gap-3">
             <Heart className="h-5 w-5 text-primary" aria-hidden="true" />
             <h3 className="font-semibold">Coming soon</h3>
           </div>
