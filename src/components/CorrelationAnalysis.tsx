@@ -93,7 +93,7 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
       for (let j = i + 1; j < keys.length; j++) {
         const r = pearson(series[keys[i]], series[keys[j]]);
         if (r === null) continue;
-        const strength = getStrength(r);
+        const strength = getCorrelationStrength(r);
         if (strength === 'none') continue; // skip noise
         all.push({
           varA: keys[i],
