@@ -29,6 +29,9 @@ export default function TrackPage() {
   const [medLogs, setMedLogs] = useState<MedicationLog[]>(
     existingLog?.medications ?? medications.filter(m => m.active).map(m => ({ medicationId: m.id, taken: false }))
   );
+  const [treatmentLogs, setTreatmentLogs] = useState<TreatmentLog[]>(
+    existingLog?.treatments ?? treatments.filter(t => t.active).map(t => ({ treatmentId: t.id, done: false }))
+  );
 
   const changeDate = (days: number) => {
     const d = new Date(currentDate);
