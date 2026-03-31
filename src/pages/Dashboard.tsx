@@ -262,7 +262,22 @@ export default function DashboardPage() {
             {/* Timeline chart */}
             {chartData.length > 1 && allLines.length > 0 && (
               <Card className="p-3 sm:p-5">
-                <h3 className="font-semibold mb-3 text-sm">14-Day Timeline</h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-sm">{days}-Day Timeline</h3>
+                  <div className="flex gap-1">
+                    {RANGE_OPTIONS.map(d => (
+                      <Button
+                        key={d}
+                        variant={days === d ? 'default' : 'ghost'}
+                        size="sm"
+                        className="h-7 px-2 text-xs"
+                        onClick={() => setDays(d)}
+                      >
+                        {d}d
+                      </Button>
+                    ))}
+                  </div>
+                </div>
                 <div className="h-48" role="img" aria-label="Customisable timeline chart">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData}>
