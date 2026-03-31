@@ -6,9 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { useHealthData } from '@/hooks/useHealthData';
 import { AppLayout } from '@/components/AppLayout';
 import { getSeverityLevel } from '@/types/health';
-import { FileText, Copy, Check } from 'lucide-react';
+import { FileText, Copy, Check, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { useWeather } from '@/hooks/useWeather';
+import { generateClinicalPdf } from '@/lib/clinical-pdf';
+import { pearson, getCorrelationStrength, generateInsight } from '@/lib/correlation';
 
 type ReportRange = 7 | 14 | 30;
 
