@@ -53,6 +53,16 @@ export function useHealthData() {
     setMedications(prev => prev.filter(m => m.id !== id));
   };
 
+  const addTreatment = (treatment: Omit<Treatment, 'id'>) => {
+    const newTreatment: Treatment = { ...treatment, id: crypto.randomUUID() };
+    setTreatments(prev => [...prev, newTreatment]);
+    return newTreatment;
+  };
+
+  const removeTreatment = (id: string) => {
+    setTreatments(prev => prev.filter(t => t.id !== id));
+  };
+
   const addLog = (log: Omit<DailyLog, 'id' | 'createdAt'>) => {
     const newLog: DailyLog = {
       ...log,
