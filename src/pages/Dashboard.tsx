@@ -200,6 +200,9 @@ export default function DashboardPage() {
           </Card>
         )}
 
+        {/* Weather - always visible */}
+        <WeatherWidget />
+
         {!hasData ? (
           <Card className="p-8 text-center space-y-3">
             <Activity className="h-10 w-10 mx-auto text-muted-foreground" aria-hidden="true" />
