@@ -47,6 +47,7 @@ export default function TrackPage() {
       setNotes(log.notes);
       setSymptomLogs(log.symptoms);
       setMedLogs(log.medications);
+      setTreatmentLogs(log.treatments ?? []);
     } else {
       setPain(0);
       setSleepHours(7);
@@ -55,6 +56,7 @@ export default function TrackPage() {
       setNotes('');
       setSymptomLogs(symptoms.map(s => ({ symptomId: s.id, severity: 0 })));
       setMedLogs(medications.filter(m => m.active).map(m => ({ medicationId: m.id, taken: false })));
+      setTreatmentLogs(treatments.filter(t => t.active).map(t => ({ treatmentId: t.id, done: false })));
     }
   };
 
