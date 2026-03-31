@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AppLayout } from '@/components/AppLayout';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useIndexedDB } from '@/hooks/useIndexedDB';
 import { parsePromethease, cleanHtml, DnaReport, DnaVariant } from '@/lib/promethease-parser';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -16,7 +16,7 @@ import {
 type ReputeFilter = 'all' | 'Bad' | 'Good' | 'none';
 
 export default function DnaReportPage() {
-  const [report, setReport] = useLocalStorage<DnaReport | null>('dna-report', null);
+  const [report, setReport, { loaded, remove: removeReport }] = useIndexedDB<DnaReport | null>('dna-report', null);
   const [parsing, setParsing] = useState(false);
   const [search, setSearch] = useState('');
   const [reputeFilter, setReputeFilter] = useState<ReputeFilter>('all');
@@ -49,9 +49,9 @@ export default function DnaReportPage() {
   }, [setReport]);
 
   const deleteReport = useCallback(() => {
-    setReport(null);
+    removeReport();
     toast.success('DNA report deleted');
-  }, [setReport]);
+  }, [removeReport]);
 
   // Aggregate conditions across all variants
   const allConditions = useMemo(() => {
@@ -123,7 +123,11 @@ export default function DnaReportPage() {
           )}
         </div>
 
-        {!report ? (
+        {!loaded ? (
+          <Card className="p-8 text-center">
+            <p className="text-muted-foreground text-sm">Loading...</p>
+          </Card>
+        ) : !report ? (
           <Card className="p-8 text-center space-y-4">
             <Dna className="h-12 w-12 mx-auto text-muted-foreground" />
             <h3 className="text-lg font-medium">Upload Promethease Report</h3>
