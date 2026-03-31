@@ -212,6 +212,47 @@ export default function ReportPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const downloadPdf = () => {
+    // Compute correlations for PDF
+    const correlations: { varA: string; varB: string; r: number; insight: string }[] = [];
+    if (recentLogs.length >= 4) {
+      const series: Record<string, number[]> = {
+        Pain: recentLogs.map(l => l.overallPain),
+        Sleep: recentLogs.map(l => l.sleepQuality),
+        Mood: recentLogs.map(l => l.mood),
+        Energy: recentLogs.map(l => (l.energyLevel ?? 50) / 10),
+      };
+      symptoms.forEach(sym => {
+        const vals = recentLogs.map(l => {
+          const sl = l.symptoms.find(s => s.symptomId === sym.id);
+          return sl?.severity ?? 0;
+        });
+        if (vals.some(v => v > 0)) series[sym.name] = vals;
+      });
+
+      const keys = Object.keys(series);
+      for (let i = 0; i < keys.length; i++) {
+        for (let j = i + 1; j < keys.length; j++) {
+          const r = pearson(series[keys[i]], series[keys[j]]);
+          if (r === null) continue;
+          const strength = getCorrelationStrength(r);
+          if (strength === 'none') continue;
+          correlations.push({
+            varA: keys[i], varB: keys[j], r,
+            insight: generateInsight(keys[i], keys[j], r),
+          });
+        }
+      }
+      correlations.sort((a, b) => Math.abs(b.r) - Math.abs(a.r));
+    }
+
+    generateClinicalPdf({
+      range, conditions, symptoms, medications, treatments, logs,
+      correlations,
+    });
+    toast.success('PDF downloaded');
+  };
+
   return (
     <AppLayout>
       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
