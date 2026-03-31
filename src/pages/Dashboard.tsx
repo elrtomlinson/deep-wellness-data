@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { WeatherWidget } from '@/components/WeatherWidget';
 import { WeatherCorrelation } from '@/components/WeatherCorrelation';
 import { FlareForecast } from '@/components/FlareForecast';
+import { MedicationEffectivenessTracker } from '@/components/MedicationEffectivenessTracker';
 
 const CHART_COLORS = [
   'hsl(var(--chart-1))',
@@ -299,6 +300,9 @@ export default function DashboardPage() {
 
             {/* Weather correlation */}
             <WeatherCorrelation />
+
+            {/* Medication effectiveness */}
+            <MedicationEffectivenessTracker />
 
             {/* Top symptoms */}
             {todayLog && todayLog.symptoms.length > 0 && (
