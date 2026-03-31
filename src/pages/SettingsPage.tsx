@@ -104,6 +104,24 @@ export default function SettingsPage() {
 
         <Card className="p-5 space-y-3">
           <div className="flex items-center gap-3">
+            <Download className="h-5 w-5 text-primary" aria-hidden="true" />
+            <h3 className="font-semibold">Export Data</h3>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Download all your health data for backup or to share with your healthcare provider.
+          </p>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => exportData('json')}>
+              Export JSON
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
+              Export CSV
+            </Button>
+          </div>
+        </Card>
+
+        <Card className="p-5 space-y-3">
+          <div className="flex items-center gap-3">
             <Database className="h-5 w-5 text-primary" aria-hidden="true" />
             <h3 className="font-semibold">Data</h3>
           </div>
