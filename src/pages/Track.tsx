@@ -69,6 +69,8 @@ export default function TrackPage() {
       setTreatmentLogs(log.treatments ?? []);
       setSideEffects(log.sideEffects ?? []);
       setFoodTags(log.foodTags ?? []);
+      setSocialBattery(log.socialBattery ?? 80);
+      setSocialEvents(log.socialEvents ?? []);
     } else {
       setPain(0); setSleepHours(7); setSleepQuality(5); setMood(5);
       setEnergyLevel(50); setEnergySpent(0); setNotes('');
@@ -77,6 +79,8 @@ export default function TrackPage() {
       setTreatmentLogs(treatments.filter(t => t.active).map(t => ({ treatmentId: t.id, done: false })));
       setSideEffects([]);
       setFoodTags([]);
+      setSocialBattery(80);
+      setSocialEvents([]);
     }
   };
 
