@@ -52,7 +52,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               const active = location.pathname === to;
               return (
                 <li key={to} className="flex-1">
-                  <Link to={to} className={cn('flex flex-col items-center gap-0.5 py-3 rounded-lg transition-colors hover:bg-accent', active ? 'text-primary font-medium' : 'text-muted-foreground')} aria-current={active ? 'page' : undefined}>
+                  <Link to={to} onClick={() => haptic.light()} className={cn('flex flex-col items-center gap-0.5 py-3 rounded-lg transition-colors hover:bg-accent', active ? 'text-primary font-medium' : 'text-muted-foreground')} aria-current={active ? 'page' : undefined}>
                     <Icon className="h-7 w-7" aria-hidden="true" />
                     <span className="text-sm font-medium">{label}</span>
                   </Link>
