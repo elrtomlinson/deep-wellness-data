@@ -375,6 +375,7 @@ export default function DashboardPage() {
           </>
         )}
       </div>
+      </PullToRefreshWrapper>
     </AppLayout>
   );
 }
