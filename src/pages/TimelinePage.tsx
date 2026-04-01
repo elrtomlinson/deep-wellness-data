@@ -308,6 +308,23 @@ export default function TimelinePage() {
                                 <WeatherInline weather={event.dailyLog.weather} />
                               )}
 
+                              {/* Social events */}
+                              {event.type === 'daily_log' && event.dailyLog?.socialEvents && event.dailyLog.socialEvents.length > 0 && (
+                                <div className="mt-1.5 flex flex-wrap gap-1">
+                                  <Users className="h-3 w-3 text-muted-foreground mt-0.5" />
+                                  {event.dailyLog.socialEvents.map(se => (
+                                    <Badge key={se.id} variant="outline" className="text-[10px] px-1.5 py-0">
+                                      {se.label} ({se.preEnergy}→{se.postEnergy}%)
+                                    </Badge>
+                                  ))}
+                                  {event.dailyLog.socialBattery !== undefined && (
+                                    <span className="text-[10px] text-muted-foreground ml-1">
+                                      🔋 {event.dailyLog.socialBattery}%
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+
                               {/* Food tags */}
                               {event.type === 'daily_log' && event.dailyLog?.foodTags && event.dailyLog.foodTags.length > 0 && (
                                 <div className="mt-1.5 flex flex-wrap gap-1">

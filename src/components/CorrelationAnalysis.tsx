@@ -24,7 +24,18 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
       Sleep: recentLogs.map(l => l.sleepQuality),
       Mood: recentLogs.map(l => l.mood),
       Energy: recentLogs.map(l => (l.energyLevel ?? 50) / 10),
+      'Social Battery': recentLogs.map(l => (l.socialBattery ?? 80) / 10),
     };
+
+    // Social event aggregates
+    const socialCounts = recentLogs.map(l => (l.socialEvents ?? []).length);
+    const socialDurations = recentLogs.map(l => (l.socialEvents ?? []).reduce((s, e) => s + e.durationMinutes, 0));
+    const socialDrains = recentLogs.map(l => (l.socialEvents ?? []).reduce((s, e) => s + (e.preEnergy - e.postEnergy), 0));
+    if (socialCounts.some(v => v > 0)) {
+      series['Social Events'] = socialCounts;
+      series['Social Duration'] = socialDurations;
+      series['Social Drain'] = socialDrains;
+    }
 
     // Symptom severities
     symptoms.forEach(sym => {
