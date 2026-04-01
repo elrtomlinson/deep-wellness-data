@@ -7,10 +7,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { SeveritySlider } from '@/components/SeveritySlider';
 import { EnergyTracker } from '@/components/EnergyTracker';
 import { SideEffectLogger } from '@/components/SideEffectLogger';
+import { FoodTagPicker } from '@/components/FoodTagPicker';
 import { useHealthData } from '@/hooks/useHealthData';
 import { useWeather } from '@/hooks/useWeather';
 import { AppLayout } from '@/components/AppLayout';
-import { SymptomLog, MedicationLog, TreatmentLog, SideEffectLog, WeatherSnapshot } from '@/types/health';
+import { SymptomLog, MedicationLog, TreatmentLog, SideEffectLog, WeatherSnapshot, FoodTag } from '@/types/health';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -40,6 +41,9 @@ export default function TrackPage() {
   const [sideEffects, setSideEffects] = useState<SideEffectLog[]>(
     existingLog?.sideEffects ?? []
   );
+  const [foodTags, setFoodTags] = useState<FoodTag[]>(
+    existingLog?.foodTags ?? []
+  );
 
   const changeDate = (days: number) => {
     const d = new Date(currentDate);
@@ -59,6 +63,7 @@ export default function TrackPage() {
       setMedLogs(log.medications);
       setTreatmentLogs(log.treatments ?? []);
       setSideEffects(log.sideEffects ?? []);
+      setFoodTags(log.foodTags ?? []);
     } else {
       setPain(0); setSleepHours(7); setSleepQuality(5); setMood(5);
       setEnergyLevel(50); setEnergySpent(0); setNotes('');
@@ -66,6 +71,7 @@ export default function TrackPage() {
       setMedLogs(medications.filter(m => m.active).map(m => ({ medicationId: m.id, taken: false })));
       setTreatmentLogs(treatments.filter(t => t.active).map(t => ({ treatmentId: t.id, done: false })));
       setSideEffects([]);
+      setFoodTags([]);
     }
   };
 
@@ -97,7 +103,7 @@ export default function TrackPage() {
       date: currentDate, overallPain: pain, sleepHours, sleepQuality, mood,
       energyLevel, energySpent,
       symptoms: symptomLogs, medications: medLogs, treatments: treatmentLogs,
-      sideEffects, notes, weather,
+      sideEffects, foodTags, notes, weather,
     });
     toast.success('Log saved!');
   };
@@ -188,6 +194,9 @@ export default function TrackPage() {
             })}
           </Card>
         )}
+
+        {/* Food Tags */}
+        <FoodTagPicker selected={foodTags} onChange={setFoodTags} />
 
         {/* Side Effects */}
         <SideEffectLogger medications={medications} sideEffects={sideEffects} onChange={setSideEffects} />

@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useHealthData } from '@/hooks/useHealthData';
 import { AppLayout } from '@/components/AppLayout';
-import { getSeverityLevel, DailyLog, WeatherSnapshot } from '@/types/health';
+import { getSeverityLevel, DailyLog, WeatherSnapshot, FOOD_TAGS } from '@/types/health';
 import { getWeatherDescription, getWeatherEmoji, getAqiLabel, getUvLabel, getPollenLabel } from '@/hooks/useWeather';
 import { cn } from '@/lib/utils';
 import {
@@ -306,6 +306,17 @@ export default function TimelinePage() {
                               {/* Weather snapshot for daily logs */}
                               {event.type === 'daily_log' && event.dailyLog?.weather && (
                                 <WeatherInline weather={event.dailyLog.weather} />
+                              )}
+
+                              {/* Food tags */}
+                              {event.type === 'daily_log' && event.dailyLog?.foodTags && event.dailyLog.foodTags.length > 0 && (
+                                <div className="mt-1.5 flex flex-wrap gap-1">
+                                  {event.dailyLog.foodTags.map(tag => (
+                                    <Badge key={tag} variant="outline" className="text-[10px] px-1.5 py-0">
+                                      {tag}
+                                    </Badge>
+                                  ))}
+                                </div>
                               )}
 
                               {/* Notes */}

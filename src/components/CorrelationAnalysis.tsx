@@ -8,6 +8,7 @@ import {
   pearson, getCorrelationStrength, generateInsight,
   type CorrelationResult,
 } from '@/lib/correlation';
+import { FOOD_TAGS } from '@/types/health';
 
 export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
   const { symptoms, medications, treatments, getRecentLogs } = useHealthData();
@@ -50,6 +51,12 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
         return tl?.done ? 1 : 0;
       });
       if (vals.some(v => v > 0)) series[`${treat.name} (tx)`] = vals;
+    });
+
+    // Food tags
+    FOOD_TAGS.forEach(tag => {
+      const vals = recentLogs.map(l => (l.foodTags ?? []).includes(tag) ? 1 : 0);
+      if (vals.some(v => v > 0)) series[`${tag} (food)`] = vals;
     });
 
     // Weather from stored log snapshots
