@@ -8,6 +8,7 @@ import {
   pearson, getCorrelationStrength, generateInsight,
   type CorrelationResult,
 } from '@/lib/correlation';
+import { FOOD_TAGS } from '@/types/health';
 
 export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
   const { symptoms, medications, treatments, getRecentLogs } = useHealthData();
