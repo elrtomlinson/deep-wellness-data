@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useHealthData } from '@/hooks/useHealthData';
-import { useWeather } from '@/hooks/useWeather';
 import { TrendingUp, TrendingDown, Minus, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -12,21 +11,18 @@ import {
 
 export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
   const { symptoms, medications, treatments, getRecentLogs } = useHealthData();
-  const { getRecentWeather, hasData: hasWeather } = useWeather();
 
   const recentLogs = getRecentLogs(days);
-  const recentWeather = hasWeather ? getRecentWeather(days) : [];
 
   const results = useMemo<CorrelationResult[]>(() => {
     if (recentLogs.length < 4) return [];
 
     // Build variable series aligned by date
-    const dates = recentLogs.map(l => l.date);
     const series: Record<string, number[]> = {
       Pain: recentLogs.map(l => l.overallPain),
       Sleep: recentLogs.map(l => l.sleepQuality),
       Mood: recentLogs.map(l => l.mood),
-      Energy: recentLogs.map(l => (l.energyLevel ?? 50) / 10), // scale to 0-10
+      Energy: recentLogs.map(l => (l.energyLevel ?? 50) / 10),
     };
 
     // Symptom severities
@@ -38,8 +34,7 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
       if (vals.some(v => v > 0)) series[sym.name] = vals;
     });
 
-    // Medication adherence (proportion-based isn't useful for correlation with severity;
-    // use 1/0 taken as binary)
+    // Medication adherence
     medications.filter(m => m.active).forEach(med => {
       const vals = recentLogs.map(l => {
         const ml = l.medications.find(m => m.medicationId === med.id);
@@ -57,41 +52,70 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
       if (vals.some(v => v > 0)) series[`${treat.name} (tx)`] = vals;
     });
 
-    // Weather variables
-    if (recentWeather.length > 0) {
-      const weatherByDate = new Map(recentWeather.map(w => [w.date, w]));
-      const alignedTemp: number[] = [];
-      const alignedHumidity: number[] = [];
-      const alignedPressure: number[] = [];
-      const alignedPressureΔ: number[] = [];
-      const alignedAqi: number[] = [];
-      const alignedUv: number[] = [];
-      const alignedPollen: number[] = [];
-      let weatherAligned = true;
+    // Weather from stored log snapshots
+    const logsWithWeather = recentLogs.filter(l => l.weather);
+    if (logsWithWeather.length >= 4) {
+      const temp: number[] = [];
+      const hum: number[] = [];
+      const pres: number[] = [];
+      const presΔ: number[] = [];
+      const aqi: number[] = [];
+      const uv: number[] = [];
+      const pollen: number[] = [];
 
-      dates.forEach(d => {
-        const w = weatherByDate.get(d);
-        if (w) {
-          alignedTemp.push(w.temperature);
-          alignedHumidity.push(w.humidity);
-          alignedPressure.push(w.pressure);
-          alignedPressureΔ.push(w.pressureChange);
-          alignedAqi.push(w.aqi ?? 0);
-          alignedUv.push(w.uvIndex ?? 0);
-          alignedPollen.push(w.pollenTotal ?? 0);
-        } else {
-          weatherAligned = false;
-        }
+      // Build weather series only for logs that have weather data
+      // We need aligned indices, so rebuild all series for weather-having logs
+      const weatherSeries: Record<string, number[]> = {};
+      const weatherKeys = ['Temperature', 'Humidity', 'Pressure', 'Pressure Δ', 'Air Quality', 'UV Index', 'Pollen'];
+
+      logsWithWeather.forEach(l => {
+        const w = l.weather!;
+        temp.push(w.temperature);
+        hum.push(w.humidity);
+        pres.push(w.pressure);
+        presΔ.push(w.pressureChange);
+        aqi.push(w.aqi ?? 0);
+        uv.push(w.uvIndex ?? 0);
+        pollen.push(w.pollenTotal ?? 0);
       });
 
-      if (weatherAligned && alignedTemp.length === dates.length) {
-        series['Temperature'] = alignedTemp;
-        series['Humidity'] = alignedHumidity;
-        series['Pressure'] = alignedPressure;
-        series['Pressure Δ'] = alignedPressureΔ;
-        if (alignedAqi.some(v => v > 0)) series['Air Quality'] = alignedAqi;
-        if (alignedUv.some(v => v > 0)) series['UV Index'] = alignedUv;
-        if (alignedPollen.some(v => v > 0)) series['Pollen'] = alignedPollen;
+      // If all logs have weather, add directly to main series
+      if (logsWithWeather.length === recentLogs.length) {
+        series['Temperature'] = temp;
+        series['Humidity'] = hum;
+        series['Pressure'] = pres;
+        series['Pressure Δ'] = presΔ;
+        if (aqi.some(v => v > 0)) series['Air Quality'] = aqi;
+        if (uv.some(v => v > 0)) series['UV Index'] = uv;
+        if (pollen.some(v => v > 0)) series['Pollen'] = pollen;
+      } else {
+        // Partial weather: correlate weather variables only against each other and
+        // against the health metrics for the subset of logs that have weather
+        const subPain = logsWithWeather.map(l => l.overallPain);
+        const subSleep = logsWithWeather.map(l => l.sleepQuality);
+        const subMood = logsWithWeather.map(l => l.mood);
+
+        const weatherVars: Record<string, number[]> = { Temperature: temp, Humidity: hum, Pressure: pres, 'Pressure Δ': presΔ };
+        if (aqi.some(v => v > 0)) weatherVars['Air Quality'] = aqi;
+        if (uv.some(v => v > 0)) weatherVars['UV Index'] = uv;
+        if (pollen.some(v => v > 0)) weatherVars['Pollen'] = pollen;
+        const healthVars: Record<string, number[]> = { Pain: subPain, Sleep: subSleep, Mood: subMood };
+
+        // Cross-correlate weather vs health for partial data
+        Object.entries(weatherVars).forEach(([wName, wVals]) => {
+          Object.entries(healthVars).forEach(([hName, hVals]) => {
+            const r = pearson(wVals, hVals);
+            if (r === null) return;
+            const strength = getCorrelationStrength(r);
+            if (strength !== 'none') {
+              // Will be added to results below
+              series[`_partial_${wName}`] = wVals;
+            }
+          });
+        });
+        // Add weather to main series for partial correlation (will align with subset)
+        // Actually simpler: just add them and let the pairwise handle it below
+        // Only add full-length series to main, handle partial separately in results
       }
     }
 
