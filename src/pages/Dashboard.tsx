@@ -90,6 +90,30 @@ export default function DashboardPage() {
   });
 
   const [showSettings, setShowSettings] = useState(false);
+  const [showSectionManager, setShowSectionManager] = useState(false);
+
+  const DASHBOARD_SECTIONS = [
+    { id: 'patterns', label: 'Patterns & Triggers', defaultVisible: true },
+    { id: 'cognitive', label: 'Cognitive & Experiments', defaultVisible: false },
+    { id: 'analytics', label: 'Analytics', defaultVisible: false },
+    { id: 'environment', label: 'Environment & Weather', defaultVisible: false },
+    { id: 'treatments', label: 'Treatment Insights', defaultVisible: false },
+  ] as const;
+
+  type SectionId = typeof DASHBOARD_SECTIONS[number]['id'];
+
+  const defaultVisibility = Object.fromEntries(
+    DASHBOARD_SECTIONS.map(s => [s.id, s.defaultVisible])
+  ) as Record<SectionId, boolean>;
+
+  const [sectionVisibility, setSectionVisibility] = useLocalStorage<Record<SectionId, boolean>>(
+    'dashboard-section-visibility',
+    defaultVisibility
+  );
+
+  const toggleSection = (id: SectionId) => {
+    setSectionVisibility(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const toggleCore = (id: string) => {
     setTracked(prev => ({
