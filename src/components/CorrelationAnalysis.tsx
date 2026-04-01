@@ -141,7 +141,7 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
 
     // Sort by absolute r descending
     return all.sort((a, b) => Math.abs(b.r) - Math.abs(a.r));
-  }, [recentLogs, symptoms, medications, treatments, recentWeather]);
+  }, [recentLogs, symptoms, medications, treatments]);
 
   if (results.length === 0) return null;
 
