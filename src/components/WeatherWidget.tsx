@@ -209,8 +209,16 @@ export function WeatherWidget() {
         </div>
       )}
 
-      {/* Refresh */}
-      <div className="flex justify-end">
+      {/* Backfill + Refresh */}
+      <div className="flex items-center justify-between">
+        {logsWithoutWeather > 0 ? (
+          <Button variant="outline" size="sm" className="h-7 text-xs" onClick={handleBackfill} disabled={loading}>
+            {loading ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <History className="h-3 w-3 mr-1" />}
+            Backfill {logsWithoutWeather} log{logsWithoutWeather !== 1 ? 's' : ''}
+          </Button>
+        ) : (
+          <span />
+        )}
         <Button variant="ghost" size="sm" className="h-6 px-2 text-[10px] text-muted-foreground" onClick={requestLocation}>
           <RefreshCw className="h-3 w-3 mr-1" />
           Refresh
