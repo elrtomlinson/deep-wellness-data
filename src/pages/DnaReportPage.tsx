@@ -163,6 +163,9 @@ export default function DnaReportPage() {
           </Card>
         ) : (
           <>
+            {/* Condition-specific genetic insights */}
+            <DnaConditionInsights />
+
             {/* Summary */}
             {stats && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

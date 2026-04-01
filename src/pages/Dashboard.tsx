@@ -389,42 +389,42 @@ export default function DashboardPage() {
               </Card>
             )}
 
-            {/* ━━━ SECTION 4: Pattern Detection (collapsible) ━━━ */}
-            <DashboardSection title="Patterns & Triggers" defaultOpen={true}>
-              <TriggerMapping />
-              <SymptomCycles />
-              <SymptomClustering />
-            </DashboardSection>
+            {sectionVisibility.patterns && (
+              <DashboardSection title="Patterns & Triggers" defaultOpen={true}>
+                <TriggerMapping />
+                <SymptomCycles />
+                <SymptomClustering />
+              </DashboardSection>
+            )}
 
-            {/* ━━━ SECTION 5: Cognitive & Behavioral ━━━ */}
-            <DashboardSection title="Cognitive & Experiments" defaultOpen={false}>
-              <BrainFogIndex />
-              <HabitExperiments />
-            </DashboardSection>
+            {sectionVisibility.cognitive && (
+              <DashboardSection title="Cognitive & Experiments" defaultOpen={false}>
+                <BrainFogIndex />
+                <HabitExperiments />
+              </DashboardSection>
+            )}
 
-            {/* ━━━ SECTION 6: Deep Analytics (collapsible) ━━━ */}
-            <DashboardSection title="Analytics" defaultOpen={false}>
-              <LagAnalysis days={days} />
-              <CorrelationAnalysis days={days} />
-              <MedicationInteractionAlerts />
-            </DashboardSection>
+            {sectionVisibility.analytics && (
+              <DashboardSection title="Analytics" defaultOpen={false}>
+                <LagAnalysis days={days} />
+                <CorrelationAnalysis days={days} />
+                <MedicationInteractionAlerts />
+              </DashboardSection>
+            )}
 
-            {/* ━━━ SECTION 6b: Environmental ━━━ */}
-            <DashboardSection title="Environment & Weather" defaultOpen={false}>
-              <WeatherWidget />
-              <WeatherCorrelation days={days} />
-            </DashboardSection>
+            {sectionVisibility.environment && (
+              <DashboardSection title="Environment & Weather" defaultOpen={false}>
+                <WeatherWidget />
+                <WeatherCorrelation days={days} />
+              </DashboardSection>
+            )}
 
-            {/* ━━━ SECTION 7: Treatment Effectiveness (collapsible) ━━━ */}
-            <DashboardSection title="Treatment Insights" defaultOpen={false}>
-              <MedicationEffectivenessTracker />
-              <TreatmentEffectivenessTracker />
-            </DashboardSection>
-
-            {/* ━━━ SECTION 8: Genetic (collapsible, least-used) ━━━ */}
-            <DashboardSection title="Genetic Insights" defaultOpen={false}>
-              <DnaConditionInsights />
-            </DashboardSection>
+            {sectionVisibility.treatments && (
+              <DashboardSection title="Treatment Insights" defaultOpen={false}>
+                <MedicationEffectivenessTracker />
+                <TreatmentEffectivenessTracker />
+              </DashboardSection>
+            )}
           </>
         )}
       </div>
