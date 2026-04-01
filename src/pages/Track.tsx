@@ -8,8 +8,9 @@ import { SeveritySlider } from '@/components/SeveritySlider';
 import { EnergyTracker } from '@/components/EnergyTracker';
 import { SideEffectLogger } from '@/components/SideEffectLogger';
 import { useHealthData } from '@/hooks/useHealthData';
+import { useWeather } from '@/hooks/useWeather';
 import { AppLayout } from '@/components/AppLayout';
-import { SymptomLog, MedicationLog, TreatmentLog, SideEffectLog } from '@/types/health';
+import { SymptomLog, MedicationLog, TreatmentLog, SideEffectLog, WeatherSnapshot } from '@/types/health';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 
