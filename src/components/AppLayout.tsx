@@ -90,9 +90,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
               <li key={to} className="flex-1">
                 <Link
                   to={to}
+                  onClick={() => haptic.light()}
                   className={cn(
                     'flex flex-col items-center gap-0.5 py-1.5 sm:py-2 rounded-lg transition-colors',
-                    'hover:bg-accent focus-visible:bg-accent',
+                    'hover:bg-accent focus-visible:bg-accent active:scale-95 transition-transform',
                     active ? 'text-primary font-medium' : 'text-muted-foreground',
                   )}
                   aria-current={active ? 'page' : undefined}

@@ -132,10 +132,12 @@ export default function TrackPage() {
   };
 
   const toggleMed = (medicationId: string) => {
+    haptic.light();
     setMedLogs(prev => prev.map(m => m.medicationId === medicationId ? { ...m, taken: !m.taken } : m));
   };
 
   const toggleTreatment = (treatmentId: string) => {
+    haptic.light();
     setTreatmentLogs(prev => prev.map(t => t.treatmentId === treatmentId ? { ...t, done: !t.done } : t));
   };
 
