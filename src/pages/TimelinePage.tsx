@@ -358,6 +358,7 @@ export default function TimelinePage() {
           </div>
         )}
       </div>
+      </PullToRefreshWrapper>
     </AppLayout>
   );
 }
