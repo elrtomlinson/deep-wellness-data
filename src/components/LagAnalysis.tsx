@@ -108,7 +108,7 @@ export function LagAnalysis({ days = 30 }: { days?: number }) {
     });
 
     return lagResults.sort((a, b) => Math.abs(b.r) - Math.abs(a.r)).slice(0, 8);
-  }, [recentLogs, symptoms, medications, recentWeather]);
+  }, [recentLogs, symptoms, medications]);
 
   if (results.length === 0) return null;
 
