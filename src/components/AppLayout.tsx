@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, PenLine, Stethoscope, FileText, Settings, Calendar, BookOpen, Dna, MoreHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBrainFog } from '@/contexts/BrainFogContext';
+import { useHaptic } from '@/hooks/useHaptic';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useState } from 'react';
 
