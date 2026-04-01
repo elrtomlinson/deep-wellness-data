@@ -8,14 +8,15 @@ import { SeveritySlider } from '@/components/SeveritySlider';
 import { EnergyTracker } from '@/components/EnergyTracker';
 import { SideEffectLogger } from '@/components/SideEffectLogger';
 import { useHealthData } from '@/hooks/useHealthData';
+import { useWeather } from '@/hooks/useWeather';
 import { AppLayout } from '@/components/AppLayout';
-import { SymptomLog, MedicationLog, TreatmentLog, SideEffectLog } from '@/types/health';
+import { SymptomLog, MedicationLog, TreatmentLog, SideEffectLog, WeatherSnapshot } from '@/types/health';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function TrackPage() {
   const { symptoms, medications, treatments, addLog, getLogByDate } = useHealthData();
-
+  const { getWeatherForDate, hasData: hasWeather } = useWeather();
   const [currentDate, setCurrentDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const existingLog = getLogByDate(currentDate);
 
@@ -69,11 +70,34 @@ export default function TrackPage() {
   };
 
   const handleSave = () => {
+    // Auto-attach weather snapshot for the current date
+    let weather: WeatherSnapshot | undefined;
+    if (hasWeather) {
+      const w = getWeatherForDate(currentDate);
+      if (w) {
+        weather = {
+          temperature: w.temperature,
+          humidity: w.humidity,
+          pressure: w.pressure,
+          pressureChange: w.pressureChange,
+          windSpeed: w.windSpeed,
+          weatherCode: w.weatherCode,
+          aqi: w.aqi,
+          pm25: w.pm25,
+          pm10: w.pm10,
+          uvIndex: w.uvIndex,
+          pollenGrass: w.pollenGrass,
+          pollenBirch: w.pollenBirch,
+          pollenRagweed: w.pollenRagweed,
+          pollenTotal: w.pollenTotal,
+        };
+      }
+    }
     addLog({
       date: currentDate, overallPain: pain, sleepHours, sleepQuality, mood,
       energyLevel, energySpent,
       symptoms: symptomLogs, medications: medLogs, treatments: treatmentLogs,
-      sideEffects, notes,
+      sideEffects, notes, weather,
     });
     toast.success('Log saved!');
   };

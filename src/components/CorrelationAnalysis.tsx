@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useHealthData } from '@/hooks/useHealthData';
-import { useWeather } from '@/hooks/useWeather';
 import { TrendingUp, TrendingDown, Minus, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -12,21 +11,18 @@ import {
 
 export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
   const { symptoms, medications, treatments, getRecentLogs } = useHealthData();
-  const { getRecentWeather, hasData: hasWeather } = useWeather();
 
   const recentLogs = getRecentLogs(days);
-  const recentWeather = hasWeather ? getRecentWeather(days) : [];
 
   const results = useMemo<CorrelationResult[]>(() => {
     if (recentLogs.length < 4) return [];
 
     // Build variable series aligned by date
-    const dates = recentLogs.map(l => l.date);
     const series: Record<string, number[]> = {
       Pain: recentLogs.map(l => l.overallPain),
       Sleep: recentLogs.map(l => l.sleepQuality),
       Mood: recentLogs.map(l => l.mood),
-      Energy: recentLogs.map(l => (l.energyLevel ?? 50) / 10), // scale to 0-10
+      Energy: recentLogs.map(l => (l.energyLevel ?? 50) / 10),
     };
 
     // Symptom severities
@@ -38,8 +34,7 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
       if (vals.some(v => v > 0)) series[sym.name] = vals;
     });
 
-    // Medication adherence (proportion-based isn't useful for correlation with severity;
-    // use 1/0 taken as binary)
+    // Medication adherence
     medications.filter(m => m.active).forEach(med => {
       const vals = recentLogs.map(l => {
         const ml = l.medications.find(m => m.medicationId === med.id);
@@ -57,41 +52,26 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
       if (vals.some(v => v > 0)) series[`${treat.name} (tx)`] = vals;
     });
 
-    // Weather variables
-    if (recentWeather.length > 0) {
-      const weatherByDate = new Map(recentWeather.map(w => [w.date, w]));
-      const alignedTemp: number[] = [];
-      const alignedHumidity: number[] = [];
-      const alignedPressure: number[] = [];
-      const alignedPressureΔ: number[] = [];
-      const alignedAqi: number[] = [];
-      const alignedUv: number[] = [];
-      const alignedPollen: number[] = [];
-      let weatherAligned = true;
+    // Weather from stored log snapshots
+    const logsWithWeather = recentLogs.filter(l => l.weather);
+    if (logsWithWeather.length >= 4) {
+      const temp = logsWithWeather.map(l => l.weather!.temperature);
+      const hum = logsWithWeather.map(l => l.weather!.humidity);
+      const pres = logsWithWeather.map(l => l.weather!.pressure);
+      const presΔ = logsWithWeather.map(l => l.weather!.pressureChange);
+      const aqiVals = logsWithWeather.map(l => l.weather!.aqi ?? 0);
+      const uvVals = logsWithWeather.map(l => l.weather!.uvIndex ?? 0);
+      const pollenVals = logsWithWeather.map(l => l.weather!.pollenTotal ?? 0);
 
-      dates.forEach(d => {
-        const w = weatherByDate.get(d);
-        if (w) {
-          alignedTemp.push(w.temperature);
-          alignedHumidity.push(w.humidity);
-          alignedPressure.push(w.pressure);
-          alignedPressureΔ.push(w.pressureChange);
-          alignedAqi.push(w.aqi ?? 0);
-          alignedUv.push(w.uvIndex ?? 0);
-          alignedPollen.push(w.pollenTotal ?? 0);
-        } else {
-          weatherAligned = false;
-        }
-      });
-
-      if (weatherAligned && alignedTemp.length === dates.length) {
-        series['Temperature'] = alignedTemp;
-        series['Humidity'] = alignedHumidity;
-        series['Pressure'] = alignedPressure;
-        series['Pressure Δ'] = alignedPressureΔ;
-        if (alignedAqi.some(v => v > 0)) series['Air Quality'] = alignedAqi;
-        if (alignedUv.some(v => v > 0)) series['UV Index'] = alignedUv;
-        if (alignedPollen.some(v => v > 0)) series['Pollen'] = alignedPollen;
+      if (logsWithWeather.length === recentLogs.length) {
+        // All logs have weather — add to main series
+        series['Temperature'] = temp;
+        series['Humidity'] = hum;
+        series['Pressure'] = pres;
+        series['Pressure Δ'] = presΔ;
+        if (aqiVals.some(v => v > 0)) series['Air Quality'] = aqiVals;
+        if (uvVals.some(v => v > 0)) series['UV Index'] = uvVals;
+        if (pollenVals.some(v => v > 0)) series['Pollen'] = pollenVals;
       }
     }
 
@@ -117,7 +97,7 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
 
     // Sort by absolute r descending
     return all.sort((a, b) => Math.abs(b.r) - Math.abs(a.r));
-  }, [recentLogs, symptoms, medications, treatments, recentWeather]);
+  }, [recentLogs, symptoms, medications, treatments]);
 
   if (results.length === 0) return null;
 

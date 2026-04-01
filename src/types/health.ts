@@ -28,6 +28,23 @@ export interface Treatment {
   active: boolean;
 }
 
+export interface WeatherSnapshot {
+  temperature: number;
+  humidity: number;
+  pressure: number;
+  pressureChange: number;
+  windSpeed: number;
+  weatherCode: number;
+  aqi: number | null;
+  pm25: number | null;
+  pm10: number | null;
+  uvIndex: number | null;
+  pollenGrass: number | null;
+  pollenBirch: number | null;
+  pollenRagweed: number | null;
+  pollenTotal: number | null;
+}
+
 export interface DailyLog {
   id: string;
   date: string; // YYYY-MM-DD
@@ -41,6 +58,7 @@ export interface DailyLog {
   medications: MedicationLog[];
   treatments: TreatmentLog[];
   sideEffects: SideEffectLog[];
+  weather?: WeatherSnapshot;
   notes: string;
   createdAt: string;
 }
