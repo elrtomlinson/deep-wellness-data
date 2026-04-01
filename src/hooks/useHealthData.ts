@@ -78,6 +78,10 @@ export function useHealthData() {
 
   const getLogByDate = (date: string) => logs.find(l => l.date === date);
 
+  const updateLogWeather = (date: string, weather: WeatherSnapshot) => {
+    setLogs(prev => prev.map(l => l.date === date ? { ...l, weather } : l));
+  };
+
   const getRecentLogs = (days: number = 7) => {
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - days);
@@ -91,6 +95,6 @@ export function useHealthData() {
     symptoms, setSymptoms, addSymptom, removeSymptom,
     medications, setMedications, addMedication, removeMedication,
     treatments, setTreatments, addTreatment, removeTreatment,
-    logs, addLog, getLogByDate, getRecentLogs,
+    logs, addLog, getLogByDate, getRecentLogs, updateLogWeather,
   };
 }
