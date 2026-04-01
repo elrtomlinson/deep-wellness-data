@@ -53,6 +53,12 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
       if (vals.some(v => v > 0)) series[`${treat.name} (tx)`] = vals;
     });
 
+    // Food tags
+    FOOD_TAGS.forEach(tag => {
+      const vals = recentLogs.map(l => (l.foodTags ?? []).includes(tag) ? 1 : 0);
+      if (vals.some(v => v > 0)) series[`${tag} (food)`] = vals;
+    });
+
     // Weather from stored log snapshots
     const logsWithWeather = recentLogs.filter(l => l.weather);
     if (logsWithWeather.length >= 4) {

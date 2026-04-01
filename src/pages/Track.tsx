@@ -195,6 +195,9 @@ export default function TrackPage() {
           </Card>
         )}
 
+        {/* Food Tags */}
+        <FoodTagPicker selected={foodTags} onChange={setFoodTags} />
+
         {/* Side Effects */}
         <SideEffectLogger medications={medications} sideEffects={sideEffects} onChange={setSideEffects} />
 

@@ -111,6 +111,8 @@ export default function SettingsPage() {
         ],
         treatments: [{ treatmentId: t1.id, done: Math.random() > 0.3 }],
         sideEffects: [],
+        foodTags: ['caffeine', 'sugar', 'gluten', 'dairy', 'alcohol', 'processed', 'spicy', 'soy', 'eggs', 'nuts']
+          .filter(() => Math.random() > 0.6) as any[],
         notes: '',
         createdAt: new Date().toISOString(),
       });
