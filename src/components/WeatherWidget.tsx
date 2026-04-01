@@ -28,7 +28,20 @@ function MetricTile({ icon, value, unit, label, colorClass }: {
 }
 
 export function WeatherWidget() {
-  const { loading, error, locationDenied, requestLocation, getTodayWeather, hasData } = useWeather();
+  const { loading, error, locationDenied, requestLocation, getTodayWeather, hasData, backfillWeatherForLogs } = useWeather();
+  const { logs, updateLogWeather } = useHealthData();
+  const today = getTodayWeather();
+
+  const logsWithoutWeather = logs.filter(l => !l.weather).length;
+
+  const handleBackfill = async () => {
+    const updated = await backfillWeatherForLogs(logs, updateLogWeather);
+    if (updated > 0) {
+      toast.success(`Added weather data to ${updated} past log${updated !== 1 ? 's' : ''}`);
+    } else {
+      toast.info('No logs to backfill — all logs already have weather data');
+    }
+  };
   const today = getTodayWeather();
 
   if (!hasData && !loading) {
