@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useHealthData } from '@/hooks/useHealthData';
-import { useWeather } from '@/hooks/useWeather';
 import { Timer, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { pearson, getCorrelationStrength } from '@/lib/correlation';
