@@ -42,7 +42,6 @@ export function WeatherWidget() {
       toast.info('No logs to backfill — all logs already have weather data');
     }
   };
-  const today = getTodayWeather();
 
   if (!hasData && !loading) {
     return (
