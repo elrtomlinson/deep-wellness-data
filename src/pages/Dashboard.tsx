@@ -27,6 +27,8 @@ import { MedicationInteractionAlerts } from '@/components/MedicationInteractionA
 import { SymptomClustering } from '@/components/SymptomClustering';
 import { Link } from 'react-router-dom';
 import { PullToRefreshWrapper } from '@/components/PullToRefreshWrapper';
+import { Eye, EyeOff } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 
 const CHART_COLORS = [
   'hsl(var(--chart-1))',
