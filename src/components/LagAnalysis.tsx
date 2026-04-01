@@ -17,20 +17,17 @@ interface LagResult {
 
 export function LagAnalysis({ days = 30 }: { days?: number }) {
   const { symptoms, medications, logs, getRecentLogs } = useHealthData();
-  const { getRecentWeather, hasData: hasWeather } = useWeather();
 
   const recentLogs = getRecentLogs(days);
-  const recentWeather = hasWeather ? getRecentWeather(days) : [];
 
   const results = useMemo<LagResult[]>(() => {
     if (recentLogs.length < 7) return [];
 
     const sorted = [...recentLogs].sort((a, b) => a.date.localeCompare(b.date));
-    const dates = sorted.map(l => l.date);
 
     // Build cause series (potential triggers)
     const causes: Record<string, number[]> = {
-      'Poor Sleep': sorted.map(l => 10 - l.sleepQuality), // invert so high = poor
+      'Poor Sleep': sorted.map(l => 10 - l.sleepQuality),
       'Low Mood': sorted.map(l => 10 - l.mood),
       'High Energy Spend': sorted.map(l => (l.energySpent ?? 0) / 10),
     };
@@ -39,39 +36,22 @@ export function LagAnalysis({ days = 30 }: { days?: number }) {
     medications.filter(m => m.active).forEach(med => {
       const vals = sorted.map(l => {
         const ml = l.medications.find(m => m.medicationId === med.id);
-        return ml?.taken ? 0 : 10; // 10 = missed
+        return ml?.taken ? 0 : 10;
       });
       if (vals.some(v => v > 0)) causes[`Missed ${med.name}`] = vals;
     });
 
-    // Weather
-    if (recentWeather.length > 0) {
-      const weatherByDate = new Map(recentWeather.map(w => [w.date, w]));
-      const pressureDrops: number[] = [];
-      const humidity: number[] = [];
-      const aqi: number[] = [];
-      const uv: number[] = [];
-      const pollen: number[] = [];
-      let aligned = true;
-      dates.forEach(d => {
-        const w = weatherByDate.get(d);
-        if (w) {
-          pressureDrops.push(Math.max(0, -w.pressureChange));
-          humidity.push(w.humidity / 10);
-          aqi.push((w.aqi ?? 0) / 10);
-          uv.push(w.uvIndex ?? 0);
-          pollen.push((w.pollenTotal ?? 0) / 10);
-        } else {
-          aligned = false;
-        }
-      });
-      if (aligned && pressureDrops.length === dates.length) {
-        causes['Pressure Drop'] = pressureDrops;
-        causes['High Humidity'] = humidity;
-        if (aqi.some(v => v > 0)) causes['Poor Air Quality'] = aqi;
-        if (uv.some(v => v > 0)) causes['High UV'] = uv;
-        if (pollen.some(v => v > 0)) causes['High Pollen'] = pollen;
-      }
+    // Weather from stored log snapshots
+    const logsWithWeather = sorted.filter(l => l.weather);
+    if (logsWithWeather.length === sorted.length) {
+      causes['Pressure Drop'] = sorted.map(l => Math.max(0, -(l.weather!.pressureChange)));
+      causes['High Humidity'] = sorted.map(l => l.weather!.humidity / 10);
+      const aqiVals = sorted.map(l => (l.weather!.aqi ?? 0) / 10);
+      if (aqiVals.some(v => v > 0)) causes['Poor Air Quality'] = aqiVals;
+      const uvVals = sorted.map(l => l.weather!.uvIndex ?? 0);
+      if (uvVals.some(v => v > 0)) causes['High UV'] = uvVals;
+      const pollenVals = sorted.map(l => (l.weather!.pollenTotal ?? 0) / 10);
+      if (pollenVals.some(v => v > 0)) causes['High Pollen'] = pollenVals;
     }
 
     // Build effect series (outcomes)
