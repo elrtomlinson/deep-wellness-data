@@ -33,6 +33,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const { brainFogMode } = useBrainFog();
   const [moreOpen, setMoreOpen] = useState(false);
+  const haptic = useHaptic();
 
   if (brainFogMode) {
     return (
