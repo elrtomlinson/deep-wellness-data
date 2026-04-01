@@ -112,6 +112,33 @@ export function useFlarePredictor(
       });
     }
 
+    // === 7b. Poor air quality ===
+    if (todayWeather && todayWeather.aqi !== null && todayWeather.aqi >= 60) {
+      signals.push({
+        factor: 'Poor Air Quality',
+        description: `AQI at ${Math.round(todayWeather.aqi)} — may worsen respiratory and fatigue symptoms`,
+        weight: Math.min(todayWeather.aqi / 100, 1) * 0.15,
+      });
+    }
+
+    // === 7c. High pollen ===
+    if (todayWeather && todayWeather.pollenTotal !== null && todayWeather.pollenTotal >= 80) {
+      signals.push({
+        factor: 'High Pollen',
+        description: `Pollen count elevated (${Math.round(todayWeather.pollenTotal)} grains/m³) — allergy-related flares possible`,
+        weight: Math.min(todayWeather.pollenTotal / 200, 1) * 0.1,
+      });
+    }
+
+    // === 7d. High UV ===
+    if (todayWeather && todayWeather.uvIndex !== null && todayWeather.uvIndex >= 7) {
+      signals.push({
+        factor: 'High UV',
+        description: `UV index at ${todayWeather.uvIndex.toFixed(0)} — UV-sensitive conditions may flare`,
+        weight: 0.1,
+      });
+    }
+
     // === 8. Historical pattern: same-weekday flare tendency ===
     if (last7.length >= 5) {
       const highPainDays = last7.filter(l => l.overallPain >= 7).length;

@@ -50,12 +50,18 @@ export function LagAnalysis({ days = 30 }: { days?: number }) {
       const weatherByDate = new Map(recentWeather.map(w => [w.date, w]));
       const pressureDrops: number[] = [];
       const humidity: number[] = [];
+      const aqi: number[] = [];
+      const uv: number[] = [];
+      const pollen: number[] = [];
       let aligned = true;
       dates.forEach(d => {
         const w = weatherByDate.get(d);
         if (w) {
-          pressureDrops.push(Math.max(0, -w.pressureChange)); // positive = drop
+          pressureDrops.push(Math.max(0, -w.pressureChange));
           humidity.push(w.humidity / 10);
+          aqi.push((w.aqi ?? 0) / 10);
+          uv.push(w.uvIndex ?? 0);
+          pollen.push((w.pollenTotal ?? 0) / 10);
         } else {
           aligned = false;
         }
@@ -63,6 +69,9 @@ export function LagAnalysis({ days = 30 }: { days?: number }) {
       if (aligned && pressureDrops.length === dates.length) {
         causes['Pressure Drop'] = pressureDrops;
         causes['High Humidity'] = humidity;
+        if (aqi.some(v => v > 0)) causes['Poor Air Quality'] = aqi;
+        if (uv.some(v => v > 0)) causes['High UV'] = uv;
+        if (pollen.some(v => v > 0)) causes['High Pollen'] = pollen;
       }
     }
 
