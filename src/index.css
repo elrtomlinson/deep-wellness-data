@@ -133,6 +133,16 @@
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
+  /* Native-like press feedback */
+  .press-feedback {
+    @apply transition-transform duration-100 active:scale-[0.97];
+  }
+  /* Prevent text selection during gestures */
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
 }
 
 /* Brain Fog Mode: high contrast, larger text, simplified UI */
