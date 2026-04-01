@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLocalStorage } from './useLocalStorage';
-
+import type { DailyLog, WeatherSnapshot } from '@/types/health';
 export interface WeatherData {
   date: string; // YYYY-MM-DD
   temperature: number; // °C
