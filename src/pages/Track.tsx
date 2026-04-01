@@ -170,6 +170,14 @@ export default function TrackPage() {
           onEnergySpentChange={setEnergySpent}
         />
 
+        {/* Social Energy */}
+        <SocialEnergyTracker
+          socialBattery={socialBattery}
+          onSocialBatteryChange={setSocialBattery}
+          events={socialEvents}
+          onEventsChange={setSocialEvents}
+        />
+
         {/* Symptoms */}
         {symptoms.length > 0 && (
           <Card className="p-5 space-y-4">
