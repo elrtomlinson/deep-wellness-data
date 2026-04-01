@@ -1,5 +1,5 @@
 import { useLocalStorage } from './useLocalStorage';
-import { Condition, Symptom, Medication, Treatment, DailyLog } from '@/types/health';
+import { Condition, Symptom, Medication, Treatment, DailyLog, WeatherSnapshot } from '@/types/health';
 
 export function useHealthData() {
   const [conditions, setConditions] = useLocalStorage<Condition[]>('health-conditions', []);
