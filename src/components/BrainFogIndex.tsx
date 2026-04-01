@@ -232,7 +232,7 @@ export function BrainFogIndex() {
           onClick={handleReactionTap}
           className={cn(
             'w-full h-28 rounded-lg flex items-center justify-center text-sm font-medium transition-colors',
-            phase === 'reaction-wait' ? 'bg-severity-high/20 text-severity-high' : 'bg-chart-2/20 text-chart-2',
+            phase === 'reaction-wait' ? 'bg-severity-high/20 text-severity-high' : 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400',
           )}
         >
           {phase === 'reaction-wait' ? 'Wait for green...' : 'TAP NOW!'}
