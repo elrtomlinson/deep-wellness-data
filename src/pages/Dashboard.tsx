@@ -346,8 +346,12 @@ export default function DashboardPage() {
               <LagAnalysis days={days} />
               <CorrelationAnalysis days={days} />
               <MedicationInteractionAlerts />
-              <WeatherCorrelation days={days} />
+            </DashboardSection>
+
+            {/* ━━━ SECTION 6b: Environmental ━━━ */}
+            <DashboardSection title="Environment & Weather" defaultOpen={false}>
               <WeatherWidget />
+              <WeatherCorrelation days={days} />
             </DashboardSection>
 
             {/* ━━━ SECTION 7: Treatment Effectiveness (collapsible) ━━━ */}
