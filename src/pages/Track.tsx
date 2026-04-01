@@ -63,6 +63,7 @@ export default function TrackPage() {
       setMedLogs(log.medications);
       setTreatmentLogs(log.treatments ?? []);
       setSideEffects(log.sideEffects ?? []);
+      setFoodTags(log.foodTags ?? []);
     } else {
       setPain(0); setSleepHours(7); setSleepQuality(5); setMood(5);
       setEnergyLevel(50); setEnergySpent(0); setNotes('');
@@ -70,6 +71,7 @@ export default function TrackPage() {
       setMedLogs(medications.filter(m => m.active).map(m => ({ medicationId: m.id, taken: false })));
       setTreatmentLogs(treatments.filter(t => t.active).map(t => ({ treatmentId: t.id, done: false })));
       setSideEffects([]);
+      setFoodTags([]);
     }
   };
 
