@@ -144,7 +144,7 @@ export default function TrackPage() {
 
   return (
     <AppLayout>
-      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
+      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6" {...swipeHandlers}>
         {/* Date selector */}
         <div className="flex items-center justify-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => changeDate(-1)} aria-label="Previous day">
