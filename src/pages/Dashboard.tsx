@@ -26,6 +26,7 @@ import { LagAnalysis } from '@/components/LagAnalysis';
 import { MedicationInteractionAlerts } from '@/components/MedicationInteractionAlerts';
 import { SymptomClustering } from '@/components/SymptomClustering';
 import { Link } from 'react-router-dom';
+import { PullToRefreshWrapper } from '@/components/PullToRefreshWrapper';
 
 const CHART_COLORS = [
   'hsl(var(--chart-1))',
