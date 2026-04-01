@@ -116,8 +116,16 @@ export default function TrackPage() {
       symptoms: symptomLogs, medications: medLogs, treatments: treatmentLogs,
       sideEffects, socialEvents, foodTags, notes, weather,
     });
+    haptic.success();
     toast.success('Log saved!');
   };
+
+  const haptic = useHaptic();
+
+  const swipeHandlers = useSwipeGesture({
+    onSwipeLeft: () => { if (!isToday) changeDate(1); },
+    onSwipeRight: () => changeDate(-1),
+  });
 
   const updateSymptomSeverity = (symptomId: string, severity: number) => {
     setSymptomLogs(prev => prev.map(s => s.symptomId === symptomId ? { ...s, severity } : s));
