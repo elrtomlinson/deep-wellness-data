@@ -64,6 +64,9 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
       const alignedHumidity: number[] = [];
       const alignedPressure: number[] = [];
       const alignedPressureΔ: number[] = [];
+      const alignedAqi: number[] = [];
+      const alignedUv: number[] = [];
+      const alignedPollen: number[] = [];
       let weatherAligned = true;
 
       dates.forEach(d => {
@@ -73,6 +76,9 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
           alignedHumidity.push(w.humidity);
           alignedPressure.push(w.pressure);
           alignedPressureΔ.push(w.pressureChange);
+          alignedAqi.push(w.aqi ?? 0);
+          alignedUv.push(w.uvIndex ?? 0);
+          alignedPollen.push(w.pollenTotal ?? 0);
         } else {
           weatherAligned = false;
         }
@@ -83,6 +89,9 @@ export function CorrelationAnalysis({ days = 14 }: { days?: number }) {
         series['Humidity'] = alignedHumidity;
         series['Pressure'] = alignedPressure;
         series['Pressure Δ'] = alignedPressureΔ;
+        if (alignedAqi.some(v => v > 0)) series['Air Quality'] = alignedAqi;
+        if (alignedUv.some(v => v > 0)) series['UV Index'] = alignedUv;
+        if (alignedPollen.some(v => v > 0)) series['Pollen'] = alignedPollen;
       }
     }
 
