@@ -8,10 +8,11 @@ import { SeveritySlider } from '@/components/SeveritySlider';
 import { EnergyTracker } from '@/components/EnergyTracker';
 import { SideEffectLogger } from '@/components/SideEffectLogger';
 import { FoodTagPicker } from '@/components/FoodTagPicker';
+import { SocialEnergyTracker } from '@/components/SocialEnergyTracker';
 import { useHealthData } from '@/hooks/useHealthData';
 import { useWeather } from '@/hooks/useWeather';
 import { AppLayout } from '@/components/AppLayout';
-import { SymptomLog, MedicationLog, TreatmentLog, SideEffectLog, WeatherSnapshot, FoodTag } from '@/types/health';
+import { SymptomLog, MedicationLog, TreatmentLog, SideEffectLog, WeatherSnapshot, FoodTag, SocialEvent } from '@/types/health';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -44,6 +45,10 @@ export default function TrackPage() {
   const [foodTags, setFoodTags] = useState<FoodTag[]>(
     existingLog?.foodTags ?? []
   );
+  const [socialBattery, setSocialBattery] = useState(existingLog?.socialBattery ?? 80);
+  const [socialEvents, setSocialEvents] = useState<SocialEvent[]>(
+    existingLog?.socialEvents ?? []
+  );
 
   const changeDate = (days: number) => {
     const d = new Date(currentDate);
@@ -64,6 +69,8 @@ export default function TrackPage() {
       setTreatmentLogs(log.treatments ?? []);
       setSideEffects(log.sideEffects ?? []);
       setFoodTags(log.foodTags ?? []);
+      setSocialBattery(log.socialBattery ?? 80);
+      setSocialEvents(log.socialEvents ?? []);
     } else {
       setPain(0); setSleepHours(7); setSleepQuality(5); setMood(5);
       setEnergyLevel(50); setEnergySpent(0); setNotes('');
@@ -72,6 +79,8 @@ export default function TrackPage() {
       setTreatmentLogs(treatments.filter(t => t.active).map(t => ({ treatmentId: t.id, done: false })));
       setSideEffects([]);
       setFoodTags([]);
+      setSocialBattery(80);
+      setSocialEvents([]);
     }
   };
 
@@ -101,9 +110,9 @@ export default function TrackPage() {
     }
     addLog({
       date: currentDate, overallPain: pain, sleepHours, sleepQuality, mood,
-      energyLevel, energySpent,
+      energyLevel, energySpent, socialBattery,
       symptoms: symptomLogs, medications: medLogs, treatments: treatmentLogs,
-      sideEffects, foodTags, notes, weather,
+      sideEffects, socialEvents, foodTags, notes, weather,
     });
     toast.success('Log saved!');
   };
@@ -159,6 +168,14 @@ export default function TrackPage() {
           energySpent={energySpent}
           onEnergyLevelChange={setEnergyLevel}
           onEnergySpentChange={setEnergySpent}
+        />
+
+        {/* Social Energy */}
+        <SocialEnergyTracker
+          socialBattery={socialBattery}
+          onSocialBatteryChange={setSocialBattery}
+          events={socialEvents}
+          onEventsChange={setSocialEvents}
         />
 
         {/* Symptoms */}

@@ -10,7 +10,7 @@ import { getWeatherDescription, getWeatherEmoji, getAqiLabel, getUvLabel, getPol
 import { cn } from '@/lib/utils';
 import {
   Stethoscope, Pill, Heart, Activity, AlertTriangle,
-  TrendingDown, Calendar, ClipboardList,
+  TrendingDown, Calendar, ClipboardList, Users,
   Thermometer, Droplets, Gauge, Wind, Sun, TreePine,
 } from 'lucide-react';
 
@@ -306,6 +306,23 @@ export default function TimelinePage() {
                               {/* Weather snapshot for daily logs */}
                               {event.type === 'daily_log' && event.dailyLog?.weather && (
                                 <WeatherInline weather={event.dailyLog.weather} />
+                              )}
+
+                              {/* Social events */}
+                              {event.type === 'daily_log' && event.dailyLog?.socialEvents && event.dailyLog.socialEvents.length > 0 && (
+                                <div className="mt-1.5 flex flex-wrap gap-1">
+                                  <Users className="h-3 w-3 text-muted-foreground mt-0.5" />
+                                  {event.dailyLog.socialEvents.map(se => (
+                                    <Badge key={se.id} variant="outline" className="text-[10px] px-1.5 py-0">
+                                      {se.label} ({se.preEnergy}→{se.postEnergy}%)
+                                    </Badge>
+                                  ))}
+                                  {event.dailyLog.socialBattery !== undefined && (
+                                    <span className="text-[10px] text-muted-foreground ml-1">
+                                      🔋 {event.dailyLog.socialBattery}%
+                                    </span>
+                                  )}
+                                </div>
                               )}
 
                               {/* Food tags */}
