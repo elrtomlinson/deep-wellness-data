@@ -216,8 +216,11 @@ export default function TimelinePage() {
 
   const monthKeys = Object.keys(grouped);
 
+  const handleRefresh = useCallback(() => new Promise<void>(r => setTimeout(r, 500)), []);
+
   return (
     <AppLayout>
+      <PullToRefreshWrapper onRefresh={handleRefresh} className="max-h-[calc(100vh-120px)]">
       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
