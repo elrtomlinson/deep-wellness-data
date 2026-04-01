@@ -204,7 +204,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold">Dashboard</h2>
           {hasData && (
-            <div className="flex gap-1">
+            <div className="flex gap-1 items-center">
               {RANGE_OPTIONS.map(d => (
                 <Button
                   key={d}
@@ -216,9 +216,36 @@ export default function DashboardPage() {
                   {d}d
                 </Button>
               ))}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-xs ml-1"
+                onClick={() => setShowSectionManager(!showSectionManager)}
+                aria-label="Manage dashboard sections"
+              >
+                {showSectionManager ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+              </Button>
             </div>
           )}
         </div>
+
+        {/* Section visibility manager */}
+        {showSectionManager && hasData && (
+          <Card className="p-3 space-y-2 animate-fade-in">
+            <p className="text-xs font-medium text-muted-foreground">Show/hide dashboard sections</p>
+            <div className="space-y-2">
+              {DASHBOARD_SECTIONS.map(s => (
+                <div key={s.id} className="flex items-center justify-between">
+                  <span className="text-sm">{s.label}</span>
+                  <Switch
+                    checked={sectionVisibility[s.id] ?? s.defaultVisible}
+                    onCheckedChange={() => toggleSection(s.id)}
+                  />
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
 
         {!hasData ? (
           <Card className="p-8 text-center space-y-3">
