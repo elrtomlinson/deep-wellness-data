@@ -45,6 +45,10 @@ export default function TrackPage() {
   const [foodTags, setFoodTags] = useState<FoodTag[]>(
     existingLog?.foodTags ?? []
   );
+  const [socialBattery, setSocialBattery] = useState(existingLog?.socialBattery ?? 80);
+  const [socialEvents, setSocialEvents] = useState<SocialEvent[]>(
+    existingLog?.socialEvents ?? []
+  );
 
   const changeDate = (days: number) => {
     const d = new Date(currentDate);
