@@ -52,6 +52,26 @@ export const FOOD_TAGS = [
 
 export type FoodTag = typeof FOOD_TAGS[number];
 
+export const SOCIAL_EVENT_TYPES = ['social', 'work', 'medical', 'alone'] as const;
+export type SocialEventType = typeof SOCIAL_EVENT_TYPES[number];
+
+export const SOCIAL_LOCATIONS = ['home', 'out', 'online'] as const;
+export type SocialLocation = typeof SOCIAL_LOCATIONS[number];
+
+export interface SocialEvent {
+  id: string;
+  type: SocialEventType;
+  label: string; // e.g. "Dinner with friends"
+  groupSize: number; // 0 = alone, 1 = one-on-one, 2+ = group
+  durationMinutes: number;
+  location: SocialLocation;
+  preEnergy: number; // 0-100
+  postEnergy: number; // 0-100
+  recoveryMinutes: number; // how long to recover
+  calendarEventId?: string; // linked Google Calendar event
+  notes: string;
+}
+
 export interface DailyLog {
   id: string;
   date: string; // YYYY-MM-DD
@@ -61,10 +81,12 @@ export interface DailyLog {
   mood: number; // 0-10
   energyLevel: number; // 0-100 percent
   energySpent: number; // 0-100 percent used
+  socialBattery: number; // 0-100 percent remaining
   symptoms: SymptomLog[];
   medications: MedicationLog[];
   treatments: TreatmentLog[];
   sideEffects: SideEffectLog[];
+  socialEvents: SocialEvent[];
   foodTags: FoodTag[];
   weather?: WeatherSnapshot;
   notes: string;
