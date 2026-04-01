@@ -17,7 +17,7 @@ import { MedicationEffectivenessTracker } from '@/components/MedicationEffective
 import { TreatmentEffectivenessTracker } from '@/components/TreatmentEffectivenessTracker';
 import { CorrelationAnalysis } from '@/components/CorrelationAnalysis';
 import { TriggerMapping } from '@/components/TriggerMapping';
-import { DnaConditionInsights } from '@/components/DnaConditionInsights';
+
 import { SymptomCycles } from '@/components/SymptomCycles';
 import { WeatherCorrelation } from '@/components/WeatherCorrelation';
 import { BrainFogIndex } from '@/components/BrainFogIndex';
