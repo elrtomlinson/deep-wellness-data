@@ -17,7 +17,6 @@ import { MedicationEffectivenessTracker } from '@/components/MedicationEffective
 import { TreatmentEffectivenessTracker } from '@/components/TreatmentEffectivenessTracker';
 import { CorrelationAnalysis } from '@/components/CorrelationAnalysis';
 import { TriggerMapping } from '@/components/TriggerMapping';
-import { DnaConditionInsights } from '@/components/DnaConditionInsights';
 import { SymptomCycles } from '@/components/SymptomCycles';
 import { WeatherCorrelation } from '@/components/WeatherCorrelation';
 import { BrainFogIndex } from '@/components/BrainFogIndex';
@@ -27,6 +26,8 @@ import { MedicationInteractionAlerts } from '@/components/MedicationInteractionA
 import { SymptomClustering } from '@/components/SymptomClustering';
 import { Link } from 'react-router-dom';
 import { PullToRefreshWrapper } from '@/components/PullToRefreshWrapper';
+import { Eye, EyeOff } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 
 const CHART_COLORS = [
   'hsl(var(--chart-1))',
@@ -88,6 +89,30 @@ export default function DashboardPage() {
   });
 
   const [showSettings, setShowSettings] = useState(false);
+  const [showSectionManager, setShowSectionManager] = useState(false);
+
+  const DASHBOARD_SECTIONS = [
+    { id: 'patterns', label: 'Patterns & Triggers', defaultVisible: true },
+    { id: 'cognitive', label: 'Cognitive & Experiments', defaultVisible: false },
+    { id: 'analytics', label: 'Analytics', defaultVisible: false },
+    { id: 'environment', label: 'Environment & Weather', defaultVisible: false },
+    { id: 'treatments', label: 'Treatment Insights', defaultVisible: false },
+  ] as const;
+
+  type SectionId = typeof DASHBOARD_SECTIONS[number]['id'];
+
+  const defaultVisibility = Object.fromEntries(
+    DASHBOARD_SECTIONS.map(s => [s.id, s.defaultVisible])
+  ) as Record<SectionId, boolean>;
+
+  const [sectionVisibility, setSectionVisibility] = useLocalStorage<Record<SectionId, boolean>>(
+    'dashboard-section-visibility',
+    defaultVisibility
+  );
+
+  const toggleSection = (id: SectionId) => {
+    setSectionVisibility(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const toggleCore = (id: string) => {
     setTracked(prev => ({
@@ -178,7 +203,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold">Dashboard</h2>
           {hasData && (
-            <div className="flex gap-1">
+            <div className="flex gap-1 items-center">
               {RANGE_OPTIONS.map(d => (
                 <Button
                   key={d}
@@ -190,9 +215,36 @@ export default function DashboardPage() {
                   {d}d
                 </Button>
               ))}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-xs ml-1"
+                onClick={() => setShowSectionManager(!showSectionManager)}
+                aria-label="Manage dashboard sections"
+              >
+                {showSectionManager ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+              </Button>
             </div>
           )}
         </div>
+
+        {/* Section visibility manager */}
+        {showSectionManager && hasData && (
+          <Card className="p-3 space-y-2 animate-fade-in">
+            <p className="text-xs font-medium text-muted-foreground">Show/hide dashboard sections</p>
+            <div className="space-y-2">
+              {DASHBOARD_SECTIONS.map(s => (
+                <div key={s.id} className="flex items-center justify-between">
+                  <span className="text-sm">{s.label}</span>
+                  <Switch
+                    checked={sectionVisibility[s.id] ?? s.defaultVisible}
+                    onCheckedChange={() => toggleSection(s.id)}
+                  />
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
 
         {!hasData ? (
           <Card className="p-8 text-center space-y-3">
@@ -336,42 +388,42 @@ export default function DashboardPage() {
               </Card>
             )}
 
-            {/* ━━━ SECTION 4: Pattern Detection (collapsible) ━━━ */}
-            <DashboardSection title="Patterns & Triggers" defaultOpen={true}>
-              <TriggerMapping />
-              <SymptomCycles />
-              <SymptomClustering />
-            </DashboardSection>
+            {sectionVisibility.patterns && (
+              <DashboardSection title="Patterns & Triggers" defaultOpen={true}>
+                <TriggerMapping />
+                <SymptomCycles />
+                <SymptomClustering />
+              </DashboardSection>
+            )}
 
-            {/* ━━━ SECTION 5: Cognitive & Behavioral ━━━ */}
-            <DashboardSection title="Cognitive & Experiments" defaultOpen={false}>
-              <BrainFogIndex />
-              <HabitExperiments />
-            </DashboardSection>
+            {sectionVisibility.cognitive && (
+              <DashboardSection title="Cognitive & Experiments" defaultOpen={false}>
+                <BrainFogIndex />
+                <HabitExperiments />
+              </DashboardSection>
+            )}
 
-            {/* ━━━ SECTION 6: Deep Analytics (collapsible) ━━━ */}
-            <DashboardSection title="Analytics" defaultOpen={false}>
-              <LagAnalysis days={days} />
-              <CorrelationAnalysis days={days} />
-              <MedicationInteractionAlerts />
-            </DashboardSection>
+            {sectionVisibility.analytics && (
+              <DashboardSection title="Analytics" defaultOpen={false}>
+                <LagAnalysis days={days} />
+                <CorrelationAnalysis days={days} />
+                <MedicationInteractionAlerts />
+              </DashboardSection>
+            )}
 
-            {/* ━━━ SECTION 6b: Environmental ━━━ */}
-            <DashboardSection title="Environment & Weather" defaultOpen={false}>
-              <WeatherWidget />
-              <WeatherCorrelation days={days} />
-            </DashboardSection>
+            {sectionVisibility.environment && (
+              <DashboardSection title="Environment & Weather" defaultOpen={false}>
+                <WeatherWidget />
+                <WeatherCorrelation days={days} />
+              </DashboardSection>
+            )}
 
-            {/* ━━━ SECTION 7: Treatment Effectiveness (collapsible) ━━━ */}
-            <DashboardSection title="Treatment Insights" defaultOpen={false}>
-              <MedicationEffectivenessTracker />
-              <TreatmentEffectivenessTracker />
-            </DashboardSection>
-
-            {/* ━━━ SECTION 8: Genetic (collapsible, least-used) ━━━ */}
-            <DashboardSection title="Genetic Insights" defaultOpen={false}>
-              <DnaConditionInsights />
-            </DashboardSection>
+            {sectionVisibility.treatments && (
+              <DashboardSection title="Treatment Insights" defaultOpen={false}>
+                <MedicationEffectivenessTracker />
+                <TreatmentEffectivenessTracker />
+              </DashboardSection>
+            )}
           </>
         )}
       </div>
