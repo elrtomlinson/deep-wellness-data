@@ -12,6 +12,7 @@ import {
   Dna, Upload, Search, AlertTriangle, Shield, ChevronDown, ChevronUp,
   X, Filter, Info, ExternalLink, Trash2,
 } from 'lucide-react';
+import { DnaConditionInsights } from '@/components/DnaConditionInsights';
 
 type ReputeFilter = 'all' | 'Bad' | 'Good' | 'none';
 
