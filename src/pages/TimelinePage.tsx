@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useHealthData } from '@/hooks/useHealthData';
 import { AppLayout } from '@/components/AppLayout';
+import { PullToRefreshWrapper } from '@/components/PullToRefreshWrapper';
 import { getSeverityLevel, DailyLog, WeatherSnapshot, FOOD_TAGS } from '@/types/health';
 import { getWeatherDescription, getWeatherEmoji, getAqiLabel, getUvLabel, getPollenLabel } from '@/hooks/useWeather';
 import { cn } from '@/lib/utils';
