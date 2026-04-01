@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -11,6 +11,8 @@ import { FoodTagPicker } from '@/components/FoodTagPicker';
 import { SocialEnergyTracker } from '@/components/SocialEnergyTracker';
 import { useHealthData } from '@/hooks/useHealthData';
 import { useWeather } from '@/hooks/useWeather';
+import { useSwipeGesture } from '@/hooks/useSwipeGesture';
+import { useHaptic } from '@/hooks/useHaptic';
 import { AppLayout } from '@/components/AppLayout';
 import { SymptomLog, MedicationLog, TreatmentLog, SideEffectLog, WeatherSnapshot, FoodTag, SocialEvent } from '@/types/health';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
