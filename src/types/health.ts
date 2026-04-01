@@ -45,6 +45,13 @@ export interface WeatherSnapshot {
   pollenTotal: number | null;
 }
 
+export const FOOD_TAGS = [
+  'gluten', 'dairy', 'sugar', 'caffeine', 'alcohol',
+  'processed', 'spicy', 'soy', 'eggs', 'nuts',
+] as const;
+
+export type FoodTag = typeof FOOD_TAGS[number];
+
 export interface DailyLog {
   id: string;
   date: string; // YYYY-MM-DD
@@ -58,6 +65,7 @@ export interface DailyLog {
   medications: MedicationLog[];
   treatments: TreatmentLog[];
   sideEffects: SideEffectLog[];
+  foodTags: FoodTag[];
   weather?: WeatherSnapshot;
   notes: string;
   createdAt: string;
