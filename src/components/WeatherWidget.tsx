@@ -1,9 +1,11 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CloudRain, MapPin, Thermometer, Droplets, Gauge, Wind, Loader2, Sun, TreePine, Wind as AirIcon, RefreshCw } from 'lucide-react';
+import { CloudRain, MapPin, Thermometer, Droplets, Gauge, Wind, Loader2, Sun, TreePine, Wind as AirIcon, RefreshCw, History } from 'lucide-react';
 import { useWeather, getWeatherDescription, getWeatherEmoji, getAqiLabel, getUvLabel, getPollenLabel } from '@/hooks/useWeather';
+import { useHealthData } from '@/hooks/useHealthData';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 function MetricTile({ icon, value, unit, label, colorClass }: {
   icon: React.ReactNode;
