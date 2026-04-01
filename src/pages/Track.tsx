@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -11,6 +11,8 @@ import { FoodTagPicker } from '@/components/FoodTagPicker';
 import { SocialEnergyTracker } from '@/components/SocialEnergyTracker';
 import { useHealthData } from '@/hooks/useHealthData';
 import { useWeather } from '@/hooks/useWeather';
+import { useSwipeGesture } from '@/hooks/useSwipeGesture';
+import { useHaptic } from '@/hooks/useHaptic';
 import { AppLayout } from '@/components/AppLayout';
 import { SymptomLog, MedicationLog, TreatmentLog, SideEffectLog, WeatherSnapshot, FoodTag, SocialEvent } from '@/types/health';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -114,18 +116,28 @@ export default function TrackPage() {
       symptoms: symptomLogs, medications: medLogs, treatments: treatmentLogs,
       sideEffects, socialEvents, foodTags, notes, weather,
     });
+    haptic.success();
     toast.success('Log saved!');
   };
+
+  const haptic = useHaptic();
+
+  const swipeHandlers = useSwipeGesture({
+    onSwipeLeft: () => { if (!isToday) changeDate(1); },
+    onSwipeRight: () => changeDate(-1),
+  });
 
   const updateSymptomSeverity = (symptomId: string, severity: number) => {
     setSymptomLogs(prev => prev.map(s => s.symptomId === symptomId ? { ...s, severity } : s));
   };
 
   const toggleMed = (medicationId: string) => {
+    haptic.light();
     setMedLogs(prev => prev.map(m => m.medicationId === medicationId ? { ...m, taken: !m.taken } : m));
   };
 
   const toggleTreatment = (treatmentId: string) => {
+    haptic.light();
     setTreatmentLogs(prev => prev.map(t => t.treatmentId === treatmentId ? { ...t, done: !t.done } : t));
   };
 
@@ -134,7 +146,7 @@ export default function TrackPage() {
 
   return (
     <AppLayout>
-      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
+      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6" {...swipeHandlers}>
         {/* Date selector */}
         <div className="flex items-center justify-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => changeDate(-1)} aria-label="Previous day">

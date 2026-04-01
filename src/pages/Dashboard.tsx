@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -26,6 +26,7 @@ import { LagAnalysis } from '@/components/LagAnalysis';
 import { MedicationInteractionAlerts } from '@/components/MedicationInteractionAlerts';
 import { SymptomClustering } from '@/components/SymptomClustering';
 import { Link } from 'react-router-dom';
+import { PullToRefreshWrapper } from '@/components/PullToRefreshWrapper';
 
 const CHART_COLORS = [
   'hsl(var(--chart-1))',
@@ -163,8 +164,15 @@ export default function DashboardPage() {
   const hasData = conditions.length > 0 || logs.length > 0;
   const hasTrackableItems = symptoms.length > 0 || medications.length > 0 || treatments.length > 0;
 
+  const handleRefresh = useCallback(() => {
+    // Force re-render by cycling the days state
+    setDays(prev => prev);
+    return new Promise<void>(r => setTimeout(r, 600));
+  }, []);
+
   return (
     <AppLayout>
+      <PullToRefreshWrapper onRefresh={handleRefresh} className="max-h-[calc(100vh-120px)]">
       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -367,6 +375,7 @@ export default function DashboardPage() {
           </>
         )}
       </div>
+      </PullToRefreshWrapper>
     </AppLayout>
   );
 }

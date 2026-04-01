@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, PenLine, Stethoscope, FileText, Settings, Calendar, BookOpen, Dna, MoreHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBrainFog } from '@/contexts/BrainFogContext';
+import { useHaptic } from '@/hooks/useHaptic';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useState } from 'react';
 
@@ -32,6 +33,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const { brainFogMode } = useBrainFog();
   const [moreOpen, setMoreOpen] = useState(false);
+  const haptic = useHaptic();
 
   if (brainFogMode) {
     return (
@@ -50,7 +52,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               const active = location.pathname === to;
               return (
                 <li key={to} className="flex-1">
-                  <Link to={to} className={cn('flex flex-col items-center gap-0.5 py-3 rounded-lg transition-colors hover:bg-accent', active ? 'text-primary font-medium' : 'text-muted-foreground')} aria-current={active ? 'page' : undefined}>
+                  <Link to={to} onClick={() => haptic.light()} className={cn('flex flex-col items-center gap-0.5 py-3 rounded-lg transition-colors hover:bg-accent', active ? 'text-primary font-medium' : 'text-muted-foreground')} aria-current={active ? 'page' : undefined}>
                     <Icon className="h-7 w-7" aria-hidden="true" />
                     <span className="text-sm font-medium">{label}</span>
                   </Link>
@@ -88,9 +90,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
               <li key={to} className="flex-1">
                 <Link
                   to={to}
+                  onClick={() => haptic.light()}
                   className={cn(
                     'flex flex-col items-center gap-0.5 py-1.5 sm:py-2 rounded-lg transition-colors',
-                    'hover:bg-accent focus-visible:bg-accent',
+                    'hover:bg-accent focus-visible:bg-accent active:scale-95 transition-transform',
                     active ? 'text-primary font-medium' : 'text-muted-foreground',
                   )}
                   aria-current={active ? 'page' : undefined}
