@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLocalStorage } from './useLocalStorage';
-
+import type { DailyLog, WeatherSnapshot } from '@/types/health';
 export interface WeatherData {
   date: string; // YYYY-MM-DD
   temperature: number; // °C
@@ -228,6 +228,115 @@ export function useWeather() {
     return cache.data.slice(-days);
   }, [cache]);
 
+  /**
+   * Backfill weather snapshots for logs that don't have them.
+   * Uses the Open-Meteo Archive API with the cached location.
+   * Returns number of logs updated.
+   */
+  const backfillWeatherForLogs = useCallback(async (
+    logs: DailyLog[],
+    updateLog: (date: string, weather: WeatherSnapshot) => void,
+  ): Promise<number> => {
+    if (!cache?.lat || !cache?.lon) {
+      setError('Enable weather tracking first to set your location');
+      return 0;
+    }
+
+    const logsWithoutWeather = logs.filter(l => !l.weather);
+    if (logsWithoutWeather.length === 0) return 0;
+
+    const dates = logsWithoutWeather.map(l => l.date).sort();
+    const startDate = dates[0];
+    const endDate = dates[dates.length - 1];
+
+    setLoading(true);
+    setError(null);
+    try {
+      const forecastParams = new URLSearchParams({
+        latitude: cache.lat.toString(),
+        longitude: cache.lon.toString(),
+        daily: 'temperature_2m_mean,relative_humidity_2m_mean,surface_pressure_mean,wind_speed_10m_max,weather_code',
+        start_date: startDate,
+        end_date: endDate,
+        timezone: 'auto',
+      });
+
+      const aqParams = new URLSearchParams({
+        latitude: cache.lat.toString(),
+        longitude: cache.lon.toString(),
+        hourly: 'european_aqi,pm2_5,pm10,uv_index,grass_pollen,birch_pollen,ragweed_pollen',
+        start_date: startDate,
+        end_date: endDate,
+        timezone: 'auto',
+      });
+
+      const ARCHIVE_FORECAST = 'https://archive-api.open-meteo.com/v1/archive';
+      const [forecastRes, aqRes] = await Promise.all([
+        fetch(`${ARCHIVE_FORECAST}?${forecastParams}`).catch(() =>
+          fetch(`${OPEN_METEO_FORECAST}?${forecastParams}`)
+        ),
+        fetch(`${OPEN_METEO_AIR_QUALITY}?${aqParams}`).catch(() => null),
+      ]);
+
+      if (!forecastRes.ok) throw new Error('Weather archive API request failed');
+      const forecastJson = await forecastRes.json();
+      const aqJson = aqRes?.ok ? await aqRes.json() : null;
+
+      // Build a date→weather map
+      const dateSet = new Set(dates);
+      let updated = 0;
+
+      forecastJson.daily.time.forEach((date: string, i: number) => {
+        if (!dateSet.has(date)) return;
+
+        const pressure = forecastJson.daily.surface_pressure_mean[i] ?? 1013;
+        const prevPressure = i > 0 ? (forecastJson.daily.surface_pressure_mean[i - 1] ?? pressure) : pressure;
+
+        let aqi: number | null = null;
+        let pm25: number | null = null;
+        let pm10: number | null = null;
+        let uvIndex: number | null = null;
+        let pollenGrass: number | null = null;
+        let pollenBirch: number | null = null;
+        let pollenRagweed: number | null = null;
+
+        if (aqJson?.hourly) {
+          aqi = dailyAvg(aqJson.hourly.european_aqi, i);
+          pm25 = dailyAvg(aqJson.hourly.pm2_5, i);
+          pm10 = dailyAvg(aqJson.hourly.pm10, i);
+          uvIndex = dailyMax(aqJson.hourly.uv_index, i);
+          pollenGrass = dailyAvg(aqJson.hourly.grass_pollen, i);
+          pollenBirch = dailyAvg(aqJson.hourly.birch_pollen, i);
+          pollenRagweed = dailyAvg(aqJson.hourly.ragweed_pollen, i);
+        }
+
+        const pollenValues = [pollenGrass, pollenBirch, pollenRagweed].filter((v): v is number => v !== null);
+        const pollenTotal = pollenValues.length > 0 ? +pollenValues.reduce((s, v) => s + v, 0).toFixed(1) : null;
+
+        const weather: WeatherSnapshot = {
+          temperature: forecastJson.daily.temperature_2m_mean[i] ?? 0,
+          humidity: forecastJson.daily.relative_humidity_2m_mean[i] ?? 0,
+          pressure,
+          pressureChange: +(pressure - prevPressure).toFixed(1),
+          windSpeed: forecastJson.daily.wind_speed_10m_max[i] ?? 0,
+          weatherCode: forecastJson.daily.weather_code[i] ?? 0,
+          aqi, pm25, pm10, uvIndex,
+          pollenGrass, pollenBirch, pollenRagweed, pollenTotal,
+        };
+
+        updateLog(date, weather);
+        updated++;
+      });
+
+      return updated;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to backfill weather');
+      return 0;
+    } finally {
+      setLoading(false);
+    }
+  }, [cache]);
+
   return {
     weather: cache?.data ?? [],
     loading,
@@ -240,6 +349,8 @@ export function useWeather() {
     getWeatherDescription,
     getWeatherEmoji,
     hasData: !!cache?.data?.length,
+    hasLocation: !!(cache?.lat && cache?.lon),
+    backfillWeatherForLogs,
   };
 }
 
