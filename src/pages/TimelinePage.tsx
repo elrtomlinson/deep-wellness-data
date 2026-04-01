@@ -10,7 +10,7 @@ import { getWeatherDescription, getWeatherEmoji, getAqiLabel, getUvLabel, getPol
 import { cn } from '@/lib/utils';
 import {
   Stethoscope, Pill, Heart, Activity, AlertTriangle,
-  TrendingDown, Calendar, ClipboardList,
+  TrendingDown, Calendar, ClipboardList, Users,
   Thermometer, Droplets, Gauge, Wind, Sun, TreePine,
 } from 'lucide-react';
 
