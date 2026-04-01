@@ -110,9 +110,9 @@ export default function TrackPage() {
     }
     addLog({
       date: currentDate, overallPain: pain, sleepHours, sleepQuality, mood,
-      energyLevel, energySpent,
+      energyLevel, energySpent, socialBattery,
       symptoms: symptomLogs, medications: medLogs, treatments: treatmentLogs,
-      sideEffects, foodTags, notes, weather,
+      sideEffects, socialEvents, foodTags, notes, weather,
     });
     toast.success('Log saved!');
   };
