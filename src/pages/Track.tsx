@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 
 export default function TrackPage() {
   const { symptoms, medications, treatments, addLog, getLogByDate } = useHealthData();
-
+  const { getWeatherForDate, hasData: hasWeather } = useWeather();
   const [currentDate, setCurrentDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const existingLog = getLogByDate(currentDate);
 
