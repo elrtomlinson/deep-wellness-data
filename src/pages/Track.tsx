@@ -41,6 +41,9 @@ export default function TrackPage() {
   const [sideEffects, setSideEffects] = useState<SideEffectLog[]>(
     existingLog?.sideEffects ?? []
   );
+  const [foodTags, setFoodTags] = useState<FoodTag[]>(
+    existingLog?.foodTags ?? []
+  );
 
   const changeDate = (days: number) => {
     const d = new Date(currentDate);
