@@ -8,7 +8,7 @@ import { AppLayout } from '@/components/AppLayout';
 import { getSeverityLevel } from '@/types/health';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { Activity, Moon, Brain, TrendingUp, AlertCircle, Settings2, Zap, ChevronDown } from 'lucide-react';
+import { Activity, Moon, Brain, TrendingUp, AlertCircle, Settings2, Zap, ChevronDown, Plus, FileText, Heart, Calendar, Dna } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { WeatherWidget } from '@/components/WeatherWidget';
@@ -244,6 +244,25 @@ export default function DashboardPage() {
               ))}
             </div>
           </Card>
+        )}
+
+        {/* Quick Actions */}
+        {hasData && (
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { to: '/track', icon: Plus, label: 'Log', color: 'text-primary' },
+              { to: '/report', icon: FileText, label: 'Report', color: 'text-chart-2' },
+              { to: '/conditions', icon: Heart, label: 'Conditions', color: 'text-chart-4' },
+              { to: '/dna', icon: Dna, label: 'DNA', color: 'text-chart-5' },
+            ].map(action => (
+              <Link key={action.to} to={action.to}>
+                <Card className="p-3 flex flex-col items-center gap-1.5 hover:bg-accent/50 transition-colors cursor-pointer">
+                  <action.icon className={cn("h-5 w-5", action.color)} />
+                  <span className="text-xs font-medium">{action.label}</span>
+                </Card>
+              </Link>
+            ))}
+          </div>
         )}
 
         {!hasData ? (
