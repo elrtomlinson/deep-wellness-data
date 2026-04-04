@@ -246,7 +246,26 @@ export default function DashboardPage() {
           </Card>
         )}
 
-        {!hasData ? (
+        {/* Quick Actions */}
+        {hasData && (
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { to: '/track', icon: Plus, label: 'Log', color: 'text-primary' },
+              { to: '/report', icon: FileText, label: 'Report', color: 'text-chart-2' },
+              { to: '/conditions', icon: Heart, label: 'Conditions', color: 'text-chart-4' },
+              { to: '/dna', icon: Dna, label: 'DNA', color: 'text-chart-5' },
+            ].map(action => (
+              <Link key={action.to} to={action.to}>
+                <Card className="p-3 flex flex-col items-center gap-1.5 hover:bg-accent/50 transition-colors cursor-pointer">
+                  <action.icon className={cn("h-5 w-5", action.color)} />
+                  <span className="text-xs font-medium">{action.label}</span>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        )}
+
+
           <Card className="p-8 text-center space-y-3">
             <Activity className="h-10 w-10 mx-auto text-muted-foreground" aria-hidden="true" />
             <h3 className="text-lg font-medium">Welcome to Chronicle</h3>
