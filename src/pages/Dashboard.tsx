@@ -265,7 +265,7 @@ export default function DashboardPage() {
           </div>
         )}
 
-
+        {!hasData ? (
           <Card className="p-8 text-center space-y-3">
             <Activity className="h-10 w-10 mx-auto text-muted-foreground" aria-hidden="true" />
             <h3 className="text-lg font-medium">Welcome to Chronicle</h3>
