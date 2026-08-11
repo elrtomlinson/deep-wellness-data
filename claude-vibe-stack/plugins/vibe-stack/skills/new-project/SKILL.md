@@ -86,6 +86,11 @@ running them, and prefer the official generator over hand-writing config.
 Read `references/harness.md` and write the security and CI configuration,
 adapting the security guidance to the data this specific app handles.
 
+Then read `references/integrations.md` and tell the user which plugins, skills,
+and MCP servers are worth adding for this project. Recommend; do not install
+silently. MCP servers cost context on every turn, so only suggest the ones this
+project will actually use.
+
 ## Phase 5 — Verify, then hand over
 
 A project is not scaffolded until it runs. Actually run these and report real

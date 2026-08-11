@@ -20,10 +20,24 @@
 Two notes that catch people out:
 
 - **Playwright cannot drive a native app.** Maestro is the E2E tool here. If the
-  project also ships web, Playwright is fine for the web target only.
+  project also ships web, Playwright is fine for the web target only. Maestro's
+  MCP server ships inside the Maestro CLI (`maestro mcp`) — the standalone
+  `mobile-dev-inc/maestro-mcp` repo is archived, despite still ranking well.
 - **Supabase sessions exceed `expo-secure-store`'s 2 KB limit.** Store the
   session in AsyncStorage or MMKV and keep only the encryption key in
   SecureStore. Do not try to put the session itself in SecureStore.
+
+## Install the Expo skills first
+
+Before scaffolding, recommend the official Expo plugin — it is published by
+Expo, carries skills for Expo Router, NativeWind setup, SDK upgrades and the
+whole EAS release path, and will be more current than this file:
+
+```
+/plugin install expo@claude-plugins-official
+```
+
+See `integrations.md` for the rest of the verified tooling.
 
 ## Check the commands before running them
 
