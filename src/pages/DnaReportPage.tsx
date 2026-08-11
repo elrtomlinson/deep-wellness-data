@@ -220,6 +220,7 @@ export default function DnaReportPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search by SNP, summary, condition..."
+                  aria-label="Search genetic variants"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                   className="pl-9"

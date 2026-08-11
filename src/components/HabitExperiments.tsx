@@ -241,12 +241,14 @@ export function HabitExperiments() {
         <div className="p-3 rounded-lg border border-dashed space-y-2">
           <Input
             placeholder="Hypothesis: e.g. 'Morning walks reduce pain'"
+            aria-label="Experiment hypothesis"
             value={newHypothesis}
             onChange={e => setNewHypothesis(e.target.value)}
             className="text-xs h-8"
           />
           <Input
             placeholder="Intervention: e.g. '10min morning walk'"
+            aria-label="Experiment intervention"
             value={newVariable}
             onChange={e => setNewVariable(e.target.value)}
             className="text-xs h-8"

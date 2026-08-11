@@ -93,6 +93,7 @@ export function SideEffectLogger({ medications, sideEffects, onChange }: SideEff
               value={effect}
               onChange={e => setEffect(e.target.value)}
               placeholder="Or type a custom side effect..."
+              aria-label="Custom side effect"
             />
           </div>
 
@@ -151,7 +152,7 @@ export function SideEffectLogger({ medications, sideEffects, onChange }: SideEff
                     {med?.name} · {se.hoursAfterDose}h after
                   </span>
                 </div>
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeEffect(i)}>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeEffect(i)} aria-label={`Remove side effect ${se.effect}`}>
                   <X className="h-3 w-3" />
                 </Button>
               </div>

@@ -164,19 +164,20 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
                     <div className="mt-0.5">{meta.icon}</div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium">{e.label}</p>
-                      <p className="text-[10px] opacity-75">
+                      <p className="text-[10px] text-muted-foreground">
                         {e.durationMinutes}min · {LOC_META[e.location].label}
                         {e.groupSize > 0 && ` · ${e.groupSize} people`}
                         {' · '}{e.preEnergy}→{e.postEnergy}%
                         {e.recoveryMinutes > 0 && ` · ${e.recoveryMinutes}min recovery`}
                       </p>
-                      {e.notes && <p className="text-[10px] opacity-60 mt-0.5">{e.notes}</p>}
+                      {e.notes && <p className="text-[10px] text-muted-foreground mt-0.5">{e.notes}</p>}
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-6 w-6 shrink-0"
                       onClick={() => removeEvent(e.id)}
+                      aria-label={`Remove event ${e.label}`}
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -212,8 +213,9 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
 
               {/* Label */}
               <div className="space-y-1">
-                <label className="text-xs text-muted-foreground">What</label>
+                <label htmlFor="social-event-label" className="text-xs text-muted-foreground">What</label>
                 <Input
+                  id="social-event-label"
                   value={label}
                   onChange={e => setLabel(e.target.value)}
                   placeholder={`e.g. ${type === 'social' ? 'Coffee with friend' : type === 'work' ? 'Team meeting' : type === 'medical' ? 'Doctor visit' : 'Reading at home'}`}
@@ -277,6 +279,7 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
 
               {/* Notes */}
               <Textarea
+                aria-label="Event notes"
                 value={eventNotes}
                 onChange={e => setEventNotes(e.target.value)}
                 placeholder="How did this feel?"
