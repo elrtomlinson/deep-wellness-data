@@ -196,7 +196,7 @@ export default function DnaReportPage() {
                   <Badge
                     variant={condFilter === null ? 'default' : 'outline'}
                     className="text-[10px] cursor-pointer"
-                    onClick={() => setCondFilter(null)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setCondFilter(null))(e as never); } }}
+                    onClick={() => setCondFilter(null)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setCondFilter(null))(); } }}
             >
                     All
                   </Badge>
@@ -205,7 +205,7 @@ export default function DnaReportPage() {
                       key={cond}
                       variant={condFilter === cond ? 'default' : 'outline'}
                       className="text-[10px] cursor-pointer"
-                      onClick={() => setCondFilter(condFilter === cond ? null : cond)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setCondFilter(condFilter === cond ? null : cond))(e as never); } }}
+                      onClick={() => setCondFilter(condFilter === cond ? null : cond)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setCondFilter(condFilter === cond ? null : cond))(); } }}
             >
                       {cond} ({count})
                     </Badge>
@@ -237,7 +237,7 @@ export default function DnaReportPage() {
                         'text-severity-high border-severity-high': r === 'Bad' && reputeFilter !== r,
                         'text-severity-low border-severity-low': r === 'Good' && reputeFilter !== r,
                       })}
-                      onClick={() => setReputeFilter(r)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setReputeFilter(r))(e as never); } }}
+                      onClick={() => setReputeFilter(r)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setReputeFilter(r))(); } }}
             >
                       {r === 'none' ? 'Unset' : r}
                     </Badge>

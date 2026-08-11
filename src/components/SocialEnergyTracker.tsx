@@ -201,7 +201,7 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
                         key={t}
                         variant={type === t ? 'default' : 'outline'}
                         className={cn('cursor-pointer text-xs px-2 py-0.5', type === t && 'bg-primary')}
-                        onClick={() => setType(t)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setType(t))(e as never); } }}
+                        onClick={() => setType(t)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setType(t))(); } }}
             >
                         {meta.icon}
                         <span className="ml-1">{meta.label}</span>
@@ -235,7 +235,7 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
                         key={loc}
                         variant={location === loc ? 'default' : 'outline'}
                         className={cn('cursor-pointer text-xs px-2 py-0.5', location === loc && 'bg-primary')}
-                        onClick={() => setLocation(loc)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setLocation(loc))(e as never); } }}
+                        onClick={() => setLocation(loc)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setLocation(loc))(); } }}
             >
                         {meta.icon}
                         <span className="ml-1">{meta.label}</span>
