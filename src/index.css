@@ -15,14 +15,14 @@
     --popover: 40 33% 97%;
     --popover-foreground: 160 20% 12%;
 
-    --primary: 158 35% 38%;
+    --primary: 158 40% 30%;
     --primary-foreground: 40 33% 97%;
 
     --secondary: 160 18% 88%;
     --secondary-foreground: 160 20% 18%;
 
     --muted: 40 15% 92%;
-    --muted-foreground: 160 10% 45%;
+    --muted-foreground: 160 12% 36%;
 
     --accent: 158 25% 82%;
     --accent-foreground: 158 35% 20%;
@@ -32,7 +32,7 @@
 
     --border: 160 12% 85%;
     --input: 160 12% 85%;
-    --ring: 158 35% 38%;
+    --ring: 158 40% 30%;
 
     --radius: 0.75rem;
 
@@ -42,24 +42,24 @@
     --chart-4: 280 40% 55%;
     --chart-5: 340 55% 55%;
 
-    --warning: 35 80% 55%;
-    --warning-foreground: 35 80% 15%;
-    --success: 158 45% 42%;
+    --warning: 35 85% 30%;
+    --warning-foreground: 40 33% 97%;
+    --success: 158 45% 30%;
     --success-foreground: 40 33% 97%;
 
-    --severity-low: 158 45% 42%;
-    --severity-moderate: 35 80% 55%;
-    --severity-high: 15 75% 55%;
-    --severity-severe: 0 65% 55%;
+    --severity-low: 158 45% 30%;
+    --severity-moderate: 35 85% 30%;
+    --severity-high: 15 75% 38%;
+    --severity-severe: 0 70% 42%;
 
     --sidebar-background: 40 30% 95%;
     --sidebar-foreground: 160 20% 12%;
-    --sidebar-primary: 158 35% 38%;
+    --sidebar-primary: 158 40% 30%;
     --sidebar-primary-foreground: 40 33% 97%;
     --sidebar-accent: 158 25% 82%;
     --sidebar-accent-foreground: 158 35% 20%;
     --sidebar-border: 160 12% 85%;
-    --sidebar-ring: 158 35% 38%;
+    --sidebar-ring: 158 40% 30%;
   }
 
   .dark {
@@ -149,7 +149,7 @@
 .brain-fog-mode {
   --foreground: 160 20% 5%;
   --card: 40 30% 98%;
-  --primary: 158 50% 32%;
+  --primary: 158 55% 26%;
   font-size: 1.1rem;
 }
 
