@@ -14,7 +14,7 @@ function RatingBadge({ rating }: { rating: MedEffectivenessResult['rating'] }) {
     effective: { label: 'Effective', className: 'text-severity-low border-severity-low' },
     neutral: { label: 'Neutral', className: 'text-muted-foreground border-muted' },
     unclear: { label: 'Need more data', className: 'text-severity-moderate border-severity-moderate' },
-    insufficient: { label: 'Insufficient data', className: 'text-muted-foreground/60 border-muted' },
+    insufficient: { label: 'Insufficient data', className: 'text-muted-foreground border-muted' },
   };
   const c = config[rating];
   return <Badge variant="outline" className={cn('text-xs', c.className)}>{c.label}</Badge>;
@@ -167,7 +167,7 @@ export function MedicationEffectivenessTracker() {
         ))}
       </div>
 
-      <p className="text-[10px] text-muted-foreground/60 text-center">
+      <p className="text-[10px] text-muted-foreground text-center">
         Based on {logs.length} logged days · More data improves accuracy
       </p>
     </Card>

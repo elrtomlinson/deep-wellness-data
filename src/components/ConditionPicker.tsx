@@ -42,6 +42,7 @@ export function ConditionPicker({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
           placeholder="Search conditions or type custom..."
+          aria-label="Search conditions"
           className="pl-9"
           autoFocus
         />

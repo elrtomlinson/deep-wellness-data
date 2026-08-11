@@ -43,6 +43,7 @@ export function SearchablePicker({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
           placeholder={placeholder}
+          aria-label={placeholder}
           className="pl-9"
           autoFocus
         />

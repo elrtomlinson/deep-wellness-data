@@ -122,11 +122,13 @@ export default function JournalPage() {
           <Card className="p-5 space-y-4 animate-fade-in">
             <Input
               placeholder="Entry title (optional)"
+              aria-label="Entry title"
               value={title}
               onChange={e => setTitle(e.target.value)}
             />
             <Textarea
               placeholder="How are you feeling? What happened today? Any observations about your symptoms..."
+              aria-label="Journal entry content"
               value={content}
               onChange={e => setContent(e.target.value)}
               rows={5}
@@ -134,8 +136,9 @@ export default function JournalPage() {
 
             {/* Mood */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Mood: {entryMood}/10</label>
+              <label htmlFor="entry-mood" className="text-sm font-medium">Mood: {entryMood}/10</label>
               <input
+                id="entry-mood"
                 type="range"
                 min={0}
                 max={10}
@@ -153,6 +156,7 @@ export default function JournalPage() {
               <div className="flex gap-2">
                 <Input
                   placeholder="Add a tag..."
+                  aria-label="Add a tag"
                   value={tagInput}
                   onChange={e => setTagInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
@@ -163,7 +167,8 @@ export default function JournalPage() {
               {tags.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {tags.map(t => (
-                    <Badge key={t} variant="secondary" className="text-xs cursor-pointer" onClick={() => removeTag(t)}>
+                    <Badge key={t} variant="secondary" className="text-xs cursor-pointer" onClick={() => removeTag(t)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => removeTag(t))(); } }}
+            >
                       {t} <X className="h-3 w-3 ml-1" />
                     </Badge>
                   ))}
@@ -182,6 +187,7 @@ export default function JournalPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search entries..."
+                aria-label="Search journal entries"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="pl-9"
@@ -193,8 +199,8 @@ export default function JournalPage() {
                 <Badge
                   variant={tagFilter === null ? 'default' : 'outline'}
                   className="text-xs cursor-pointer"
-                  onClick={() => setTagFilter(null)}
-                >
+                  onClick={() => setTagFilter(null)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setTagFilter(null))(); } }}
+            >
                   All
                 </Badge>
                 {allTags.map(t => (
@@ -202,8 +208,8 @@ export default function JournalPage() {
                     key={t}
                     variant={tagFilter === t ? 'default' : 'outline'}
                     className="text-xs cursor-pointer"
-                    onClick={() => setTagFilter(tagFilter === t ? null : t)}
-                  >
+                    onClick={() => setTagFilter(tagFilter === t ? null : t)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setTagFilter(tagFilter === t ? null : t))(); } }}
+            >
                     {t}
                   </Badge>
                 ))}

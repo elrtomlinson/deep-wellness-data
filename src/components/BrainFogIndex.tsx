@@ -273,6 +273,7 @@ export function BrainFogIndex() {
             className="w-full p-2 text-sm border rounded-md bg-background resize-none"
             rows={2}
             value={userInput}
+            aria-label="Recalled words"
             onChange={e => setUserInput(e.target.value)}
             autoFocus
             placeholder="Type words here..."

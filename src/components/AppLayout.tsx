@@ -37,7 +37,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   if (brainFogMode) {
     return (
-      <div className="min-h-screen flex flex-col brain-fog-mode">
+      <div className="min-h-dvh flex flex-col brain-fog-mode">
         <a href="#main-content" className="skip-link">Skip to main content</a>
         <header className="border-b bg-card px-3 py-2.5 sm:px-4 sm:py-3">
           <div className="container flex items-center gap-2">
@@ -68,7 +68,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const isSecondaryActive = secondaryNavItems.some(item => item.to === location.pathname);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-dvh flex flex-col">
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
       <header className="border-b bg-card px-3 py-2.5 sm:px-4 sm:py-3">

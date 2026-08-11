@@ -139,6 +139,7 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
             <BatteryIndicator level={socialBattery} />
             <Slider
               value={[socialBattery]}
+              aria-label="Social battery level"
               onValueChange={([v]) => onSocialBatteryChange(v)}
               max={100}
               step={5}
@@ -164,19 +165,20 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
                     <div className="mt-0.5">{meta.icon}</div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium">{e.label}</p>
-                      <p className="text-[10px] opacity-75">
+                      <p className="text-[10px] text-muted-foreground">
                         {e.durationMinutes}min · {LOC_META[e.location].label}
                         {e.groupSize > 0 && ` · ${e.groupSize} people`}
                         {' · '}{e.preEnergy}→{e.postEnergy}%
                         {e.recoveryMinutes > 0 && ` · ${e.recoveryMinutes}min recovery`}
                       </p>
-                      {e.notes && <p className="text-[10px] opacity-60 mt-0.5">{e.notes}</p>}
+                      {e.notes && <p className="text-[10px] text-muted-foreground mt-0.5">{e.notes}</p>}
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-6 w-6 shrink-0"
                       onClick={() => removeEvent(e.id)}
+                      aria-label={`Remove event ${e.label}`}
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -200,8 +202,8 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
                         key={t}
                         variant={type === t ? 'default' : 'outline'}
                         className={cn('cursor-pointer text-xs px-2 py-0.5', type === t && 'bg-primary')}
-                        onClick={() => setType(t)}
-                      >
+                        onClick={() => setType(t)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setType(t))(); } }}
+            >
                         {meta.icon}
                         <span className="ml-1">{meta.label}</span>
                       </Badge>
@@ -212,8 +214,9 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
 
               {/* Label */}
               <div className="space-y-1">
-                <label className="text-xs text-muted-foreground">What</label>
+                <label htmlFor="social-event-label" className="text-xs text-muted-foreground">What</label>
                 <Input
+                  id="social-event-label"
                   value={label}
                   onChange={e => setLabel(e.target.value)}
                   placeholder={`e.g. ${type === 'social' ? 'Coffee with friend' : type === 'work' ? 'Team meeting' : type === 'medical' ? 'Doctor visit' : 'Reading at home'}`}
@@ -233,8 +236,8 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
                         key={loc}
                         variant={location === loc ? 'default' : 'outline'}
                         className={cn('cursor-pointer text-xs px-2 py-0.5', location === loc && 'bg-primary')}
-                        onClick={() => setLocation(loc)}
-                      >
+                        onClick={() => setLocation(loc)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setLocation(loc))(); } }}
+            >
                         {meta.icon}
                         <span className="ml-1">{meta.label}</span>
                       </Badge>
@@ -247,36 +250,37 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
               {type !== 'alone' && (
                 <div className="space-y-1">
                   <label className="text-xs text-muted-foreground">Group size: {groupSize}</label>
-                  <Slider value={[groupSize]} onValueChange={([v]) => setGroupSize(v)} min={1} max={20} step={1} />
+                  <Slider aria-label="Group size" value={[groupSize]} onValueChange={([v]) => setGroupSize(v)} min={1} max={20} step={1} />
                 </div>
               )}
 
               {/* Duration */}
               <div className="space-y-1">
                 <label className="text-xs text-muted-foreground">Duration: {duration} min</label>
-                <Slider value={[duration]} onValueChange={([v]) => setDuration(v)} min={5} max={480} step={5} />
+                <Slider aria-label="Duration in minutes" value={[duration]} onValueChange={([v]) => setDuration(v)} min={5} max={480} step={5} />
               </div>
 
               {/* Pre/Post energy */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs text-muted-foreground">Energy before: {preEnergy}%</label>
-                  <Slider value={[preEnergy]} onValueChange={([v]) => setPreEnergy(v)} max={100} step={5} />
+                  <Slider aria-label="Energy before event" value={[preEnergy]} onValueChange={([v]) => setPreEnergy(v)} max={100} step={5} />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs text-muted-foreground">Energy after: {postEnergy}%</label>
-                  <Slider value={[postEnergy]} onValueChange={([v]) => setPostEnergy(v)} max={100} step={5} />
+                  <Slider aria-label="Energy after event" value={[postEnergy]} onValueChange={([v]) => setPostEnergy(v)} max={100} step={5} />
                 </div>
               </div>
 
               {/* Recovery */}
               <div className="space-y-1">
                 <label className="text-xs text-muted-foreground">Recovery time: {recovery} min</label>
-                <Slider value={[recovery]} onValueChange={([v]) => setRecovery(v)} min={0} max={480} step={5} />
+                <Slider aria-label="Recovery time in minutes" value={[recovery]} onValueChange={([v]) => setRecovery(v)} min={0} max={480} step={5} />
               </div>
 
               {/* Notes */}
               <Textarea
+                aria-label="Event notes"
                 value={eventNotes}
                 onChange={e => setEventNotes(e.target.value)}
                 placeholder="How did this feel?"
