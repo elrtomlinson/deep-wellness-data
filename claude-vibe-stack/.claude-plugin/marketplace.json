@@ -1,0 +1,17 @@
+{
+  "name": "vibe-stack",
+  "owner": {
+    "name": "elrtomlinson"
+  },
+  "plugins": [
+    {
+      "name": "vibe-stack",
+      "source": "./plugins/vibe-stack",
+      "description": "Start new app projects the right way: a structured intake interview, a full project documentation set, and a scaffolded universal Expo app with security and testing guardrails already wired in.",
+      "version": "0.1.0",
+      "author": {
+        "name": "elrtomlinson"
+      }
+    }
+  ]
+}
