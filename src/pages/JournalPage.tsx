@@ -167,7 +167,8 @@ export default function JournalPage() {
               {tags.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {tags.map(t => (
-                    <Badge key={t} variant="secondary" className="text-xs cursor-pointer" onClick={() => removeTag(t)}>
+                    <Badge key={t} variant="secondary" className="text-xs cursor-pointer" onClick={() => removeTag(t)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => removeTag(t))(e as never); } }}
+            >
                       {t} <X className="h-3 w-3 ml-1" />
                     </Badge>
                   ))}
@@ -198,8 +199,8 @@ export default function JournalPage() {
                 <Badge
                   variant={tagFilter === null ? 'default' : 'outline'}
                   className="text-xs cursor-pointer"
-                  onClick={() => setTagFilter(null)}
-                >
+                  onClick={() => setTagFilter(null)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setTagFilter(null))(e as never); } }}
+            >
                   All
                 </Badge>
                 {allTags.map(t => (
@@ -207,8 +208,8 @@ export default function JournalPage() {
                     key={t}
                     variant={tagFilter === t ? 'default' : 'outline'}
                     className="text-xs cursor-pointer"
-                    onClick={() => setTagFilter(tagFilter === t ? null : t)}
-                  >
+                    onClick={() => setTagFilter(tagFilter === t ? null : t)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (() => setTagFilter(tagFilter === t ? null : t))(e as never); } }}
+            >
                     {t}
                   </Badge>
                 ))}
