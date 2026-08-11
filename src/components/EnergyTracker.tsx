@@ -210,7 +210,7 @@ export function EnergyTracker({ energyLevel, energySpent, onEnergyLevelChange, o
           )}
         </div>
         {pacing && (
-          <div className="flex justify-between text-[10px] text-muted-foreground/70">
+          <div className="flex justify-between text-[10px] text-muted-foreground">
             <span>Safe zone</span>
             <span>Crash threshold: {pacing.crashThreshold}%</span>
           </div>
@@ -235,7 +235,7 @@ export function EnergyTracker({ energyLevel, energySpent, onEnergyLevelChange, o
           <p className="text-xs text-muted-foreground leading-relaxed">
             {pacing.message}
           </p>
-          <div className="flex gap-3 text-[10px] text-muted-foreground/70">
+          <div className="flex gap-3 text-[10px] text-muted-foreground">
             <span>Predicted tomorrow: ~{pacing.avgNextDayPain}/10 pain</span>
             <span>·</span>
             <span>Baseline: {pacing.baselineNextDayPain}/10</span>
@@ -290,7 +290,7 @@ export function EnergyTracker({ energyLevel, energySpent, onEnergyLevelChange, o
       </div>
 
       {!pacing && (
-        <p className="text-[10px] text-muted-foreground/60 text-center">
+        <p className="text-[10px] text-muted-foreground text-center">
           Log 7+ days to unlock predictive pacing insights
         </p>
       )}

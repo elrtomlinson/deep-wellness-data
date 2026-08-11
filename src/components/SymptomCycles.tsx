@@ -213,14 +213,14 @@ export function SymptomCycles() {
               {pattern.description}
             </p>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-muted-foreground/70">Peak:</span>
+              <span className="text-[10px] text-muted-foreground">Peak:</span>
               <Badge variant="secondary" className="text-[10px]">{pattern.peakLabel}</Badge>
             </div>
           </div>
         ))}
       </div>
 
-      <p className="text-[10px] text-muted-foreground/60 text-center">
+      <p className="text-[10px] text-muted-foreground text-center">
         Based on {logs.length} logged days · Higher confidence = stronger recurring pattern
       </p>
     </Card>

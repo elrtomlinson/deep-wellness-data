@@ -237,7 +237,7 @@ export function TriggerMapping() {
         })}
       </div>
 
-      <p className="text-[10px] text-muted-foreground/60 text-center">
+      <p className="text-[10px] text-muted-foreground text-center">
         Based on {logs.length} logged days · Triggers present in ≥ 2 flare events
       </p>
     </Card>

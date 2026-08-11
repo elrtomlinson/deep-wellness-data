@@ -103,7 +103,7 @@ export function FlareForecast() {
       </div>
 
       {/* Confidence indicator */}
-      <p className="text-[10px] text-muted-foreground/60 text-center">
+      <p className="text-[10px] text-muted-foreground text-center">
         Confidence: {forecast.confidence} · Based on {logs.length} logged day{logs.length !== 1 ? 's' : ''}
       </p>
     </Card>
