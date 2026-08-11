@@ -26,6 +26,7 @@ import { MedicationInteractionAlerts } from '@/components/MedicationInteractionA
 import { SymptomClustering } from '@/components/SymptomClustering';
 import { Link } from 'react-router-dom';
 import { PullToRefreshWrapper } from '@/components/PullToRefreshWrapper';
+import { OnboardingChecklist } from '@/components/OnboardingChecklist';
 import { Eye, EyeOff } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 
@@ -263,6 +264,15 @@ export default function DashboardPage() {
               </Link>
             ))}
           </div>
+        )}
+
+        {hasData && (
+          <OnboardingChecklist
+            hasConditions={conditions.length > 0}
+            hasSymptoms={symptoms.length > 0}
+            hasMedications={medications.length > 0 || treatments.length > 0}
+            logCount={logs.length}
+          />
         )}
 
         {!hasData ? (
