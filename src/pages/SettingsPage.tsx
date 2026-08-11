@@ -2,13 +2,15 @@ import { AppLayout } from '@/components/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Shield, Database, Heart, Brain, FlaskConical, Download } from 'lucide-react';
+import { Shield, Database, Heart, Brain, FlaskConical, Download, Upload } from 'lucide-react';
 import { useBrainFog } from '@/contexts/BrainFogContext';
 import { ReminderManager } from '@/components/ReminderManager';
 import { toast } from 'sonner';
+import { useRef } from 'react';
 
 export default function SettingsPage() {
   const { brainFogMode, setBrainFogMode } = useBrainFog();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const KEYS = ['health-conditions', 'health-symptoms', 'health-medications', 'health-treatments', 'health-logs'] as const;
 
@@ -69,6 +71,32 @@ export default function SettingsPage() {
 
     download(`chronicle-export-${stamp}.csv`, [headers.join(','), ...rows].join('\n'), 'text/csv');
     toast.success('CSV exported');
+  };
+
+
+  const importData = async (file: File) => {
+    try {
+      const parsed = JSON.parse(await file.text());
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        toast.error('That file is not a Chronicle backup');
+        return;
+      }
+      const valid = KEYS.filter(k => Array.isArray(parsed[k.replace('health-', '')]));
+      if (valid.length === 0) {
+        toast.error('No Chronicle data found in that file');
+        return;
+      }
+      const counts = valid.map(k => `${parsed[k.replace('health-', '')].length} ${k.replace('health-', '')}`).join(', ');
+      if (!window.confirm(`Import ${counts}? This replaces the matching data on this device.`)) return;
+
+      for (const k of valid) {
+        localStorage.setItem(k, JSON.stringify(parsed[k.replace('health-', '')]));
+      }
+      toast.success('Data imported. Reloading...');
+      setTimeout(() => window.location.href = '/', 600);
+    } catch {
+      toast.error('Could not read that file — make sure it is a Chronicle JSON export');
+    }
   };
 
   const loadDemoData = () => {
@@ -194,6 +222,30 @@ export default function SettingsPage() {
               Export CSV
             </Button>
           </div>
+        </Card>
+
+        <Card className="p-5 space-y-3">
+          <div className="flex items-center gap-3">
+            <Upload className="h-5 w-5 text-primary" aria-hidden="true" />
+            <h3 className="font-semibold">Import Data</h3>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Restore from a Chronicle JSON export — useful when moving to a new device or browser.
+          </p>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) importData(file);
+              e.target.value = '';
+            }}
+          />
+          <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+            Import JSON
+          </Button>
         </Card>
 
         <Card className="p-5 space-y-3">
