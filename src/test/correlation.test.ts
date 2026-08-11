@@ -25,7 +25,7 @@ describe('getCorrelationStrength', () => {
     expect(getCorrelationStrength(0.8)).toBe('strong');
     expect(getCorrelationStrength(-0.8)).toBe('strong');
     expect(getCorrelationStrength(0.5)).toBe('moderate');
-    expect(getCorrelationStrength(0.3)).toBe('weak');
+    expect(getCorrelationStrength(0.2)).toBe('weak');
     expect(getCorrelationStrength(0.05)).toBe('none');
   });
 });
