@@ -139,6 +139,7 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
             <BatteryIndicator level={socialBattery} />
             <Slider
               value={[socialBattery]}
+              aria-label="Social battery level"
               onValueChange={([v]) => onSocialBatteryChange(v)}
               max={100}
               step={5}
@@ -249,32 +250,32 @@ export function SocialEnergyTracker({ socialBattery, onSocialBatteryChange, even
               {type !== 'alone' && (
                 <div className="space-y-1">
                   <label className="text-xs text-muted-foreground">Group size: {groupSize}</label>
-                  <Slider value={[groupSize]} onValueChange={([v]) => setGroupSize(v)} min={1} max={20} step={1} />
+                  <Slider aria-label="Group size" value={[groupSize]} onValueChange={([v]) => setGroupSize(v)} min={1} max={20} step={1} />
                 </div>
               )}
 
               {/* Duration */}
               <div className="space-y-1">
                 <label className="text-xs text-muted-foreground">Duration: {duration} min</label>
-                <Slider value={[duration]} onValueChange={([v]) => setDuration(v)} min={5} max={480} step={5} />
+                <Slider aria-label="Duration in minutes" value={[duration]} onValueChange={([v]) => setDuration(v)} min={5} max={480} step={5} />
               </div>
 
               {/* Pre/Post energy */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs text-muted-foreground">Energy before: {preEnergy}%</label>
-                  <Slider value={[preEnergy]} onValueChange={([v]) => setPreEnergy(v)} max={100} step={5} />
+                  <Slider aria-label="Energy before event" value={[preEnergy]} onValueChange={([v]) => setPreEnergy(v)} max={100} step={5} />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs text-muted-foreground">Energy after: {postEnergy}%</label>
-                  <Slider value={[postEnergy]} onValueChange={([v]) => setPostEnergy(v)} max={100} step={5} />
+                  <Slider aria-label="Energy after event" value={[postEnergy]} onValueChange={([v]) => setPostEnergy(v)} max={100} step={5} />
                 </div>
               </div>
 
               {/* Recovery */}
               <div className="space-y-1">
                 <label className="text-xs text-muted-foreground">Recovery time: {recovery} min</label>
-                <Slider value={[recovery]} onValueChange={([v]) => setRecovery(v)} min={0} max={480} step={5} />
+                <Slider aria-label="Recovery time in minutes" value={[recovery]} onValueChange={([v]) => setRecovery(v)} min={0} max={480} step={5} />
               </div>
 
               {/* Notes */}
