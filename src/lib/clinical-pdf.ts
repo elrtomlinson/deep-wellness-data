@@ -3,6 +3,17 @@ import autoTable from 'jspdf-autotable';
 import { format, subDays } from 'date-fns';
 import type { Condition, Symptom, Medication, Treatment, DailyLog } from '@/types/health';
 
+/**
+ * jspdf-autotable augments the jsPDF instance at runtime with `lastAutoTable`,
+ * and `getNumberOfPages` lives on the untyped `internal` bag. Neither is in the
+ * published typings, so narrow to exactly what we use rather than reaching for
+ * `any` at each call site.
+ */
+type AutoTableDoc = jsPDF & {
+  lastAutoTable: { finalY: number };
+  internal: jsPDF['internal'] & { getNumberOfPages: () => number };
+};
+
 interface ClinicalPdfData {
   range: number;
   conditions: Condition[];
@@ -56,7 +67,7 @@ export function generateClinicalPdf(data: ClinicalPdfData): void {
   }
 
   function addFooter() {
-    const pages = (doc as any).internal.getNumberOfPages();
+    const pages = (doc as AutoTableDoc).internal.getNumberOfPages();
     for (let i = 1; i <= pages; i++) {
       doc.setPage(i);
       doc.setFontSize(7);
@@ -175,7 +186,7 @@ export function generateClinicalPdf(data: ClinicalPdfData): void {
     },
   });
 
-  y = (doc as any).lastAutoTable.finalY + 8;
+  y = (doc as AutoTableDoc).lastAutoTable.finalY + 8;
 
   // ── Symptom Analysis ────────────────────────────────────────
   const symptomStats: Record<string, { total: number; count: number; max: number }> = {};
@@ -214,7 +225,7 @@ export function generateClinicalPdf(data: ClinicalPdfData): void {
       alternateRowStyles: { fillColor: [248, 250, 248] },
     });
 
-    y = (doc as any).lastAutoTable.finalY + 8;
+    y = (doc as AutoTableDoc).lastAutoTable.finalY + 8;
   }
 
   // ── Medication Adherence ─────────────────────────────────────
@@ -260,7 +271,7 @@ export function generateClinicalPdf(data: ClinicalPdfData): void {
       },
     });
 
-    y = (doc as any).lastAutoTable.finalY + 8;
+    y = (doc as AutoTableDoc).lastAutoTable.finalY + 8;
   }
 
   // ── Treatment Compliance ─────────────────────────────────────
@@ -296,7 +307,7 @@ export function generateClinicalPdf(data: ClinicalPdfData): void {
       alternateRowStyles: { fillColor: [248, 250, 248] },
     });
 
-    y = (doc as any).lastAutoTable.finalY + 8;
+    y = (doc as AutoTableDoc).lastAutoTable.finalY + 8;
   }
 
   // ── Side Effects ─────────────────────────────────────────────
@@ -327,7 +338,7 @@ export function generateClinicalPdf(data: ClinicalPdfData): void {
       alternateRowStyles: { fillColor: [248, 250, 248] },
     });
 
-    y = (doc as any).lastAutoTable.finalY + 8;
+    y = (doc as AutoTableDoc).lastAutoTable.finalY + 8;
   }
 
   // ── Correlations ─────────────────────────────────────────────
@@ -349,7 +360,7 @@ export function generateClinicalPdf(data: ClinicalPdfData): void {
       },
     });
 
-    y = (doc as any).lastAutoTable.finalY + 8;
+    y = (doc as AutoTableDoc).lastAutoTable.finalY + 8;
   }
 
   // ── Flare History ────────────────────────────────────────────
@@ -392,7 +403,7 @@ export function generateClinicalPdf(data: ClinicalPdfData): void {
       alternateRowStyles: { fillColor: [255, 245, 245] },
     });
 
-    y = (doc as any).lastAutoTable.finalY + 8;
+    y = (doc as AutoTableDoc).lastAutoTable.finalY + 8;
   }
 
   // ── Disclaimer ──────────────────────────────────────────────

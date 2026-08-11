@@ -1,0 +1,39 @@
+name: Security Review
+
+# AI-powered security review of every pull request diff.
+# https://github.com/anthropics/claude-code-security-review
+#
+# Requires the repository secret ANTHROPIC_API_KEY. Until that secret exists
+# this job is skipped rather than failing every PR.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  security-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for API key
+        id: check
+        run: |
+          if [ -n "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::ANTHROPIC_API_KEY not set - skipping security review."
+          fi
+
+      - name: Claude security review
+        if: steps.check.outputs.enabled == 'true'
+        uses: anthropics/claude-code-security-review@main
+        with:
+          claude-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          comment-pr: true

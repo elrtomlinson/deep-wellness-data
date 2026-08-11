@@ -881,7 +881,7 @@ export function getConditionsByCategory(category: string): PredefinedCondition[]
 /** Search predefined items by name */
 export function searchPredefined<T extends { name?: string }>(items: T[], query: string): T[] {
   const q = query.toLowerCase();
-  return items.filter(item => (item as any).name?.toLowerCase().includes(q) || (typeof item === 'string' && (item as string).toLowerCase().includes(q)));
+  return items.filter(item => item.name?.toLowerCase().includes(q) || (typeof item === 'string' && (item as string).toLowerCase().includes(q)));
 }
 
 export function searchPredefinedStrings(items: string[], query: string): string[] {

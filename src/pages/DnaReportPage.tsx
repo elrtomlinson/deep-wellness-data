@@ -41,8 +41,8 @@ export default function DnaReportPage() {
       const result = await parsePromethease(text);
       setReport(result);
       toast.success(`Parsed ${result.totalVariants.toLocaleString()} genetic variants`);
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to parse report');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to parse report');
     } finally {
       setParsing(false);
       if (fileRef.current) fileRef.current.value = '';

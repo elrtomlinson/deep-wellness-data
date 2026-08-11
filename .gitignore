@@ -22,3 +22,20 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local env
+.env
+.env.local
+.env.*.local
+
+# Test output
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Security scan reports
+CLAUDE-SECURITY-*/
+
+# Claude local overrides
+.claude/settings.local.json

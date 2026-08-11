@@ -6,6 +6,8 @@ import { Shield, Database, Heart, Brain, FlaskConical, Download } from 'lucide-r
 import { useBrainFog } from '@/contexts/BrainFogContext';
 import { ReminderManager } from '@/components/ReminderManager';
 import { toast } from 'sonner';
+import { FOOD_TAGS } from '@/types/health';
+import type { DailyLog, Medication, Symptom } from '@/types/health';
 
 export default function SettingsPage() {
   const { brainFogMode, setBrainFogMode } = useBrainFog();
@@ -23,7 +25,9 @@ export default function SettingsPage() {
   }
 
   const exportData = (format: 'json' | 'csv') => {
-    const data: Record<string, any[]> = {};
+    // Parsed straight from localStorage, so the shape is only as trustworthy as
+    // what was written there. Narrowed to domain types at each use site below.
+    const data: Record<string, unknown[]> = {};
     let hasData = false;
     for (const key of KEYS) {
       try {
@@ -41,26 +45,26 @@ export default function SettingsPage() {
       return;
     }
 
-    const logs: any[] = data.logs ?? [];
+    const logs = (data.logs ?? []) as DailyLog[];
     if (logs.length === 0) { toast.error('No logs to export as CSV'); return; }
 
-    const symptoms: any[] = data.symptoms ?? [];
-    const medications: any[] = data.medications ?? [];
-    const symNames = symptoms.map((s: any) => s.name);
-    const medNames = medications.map((m: any) => m.name);
+    const symptoms = (data.symptoms ?? []) as Symptom[];
+    const medications = (data.medications ?? []) as Medication[];
+    const symNames = symptoms.map((s) => s.name);
+    const medNames = medications.map((m) => m.name);
 
     const headers = ['Date', 'Pain', 'Sleep Hours', 'Sleep Quality', 'Mood', 'Energy %', 'Energy Spent %',
       ...symNames.map((n: string) => `Sym: ${n}`),
       ...medNames.map((n: string) => `Med: ${n}`),
       'Notes'];
 
-    const rows = logs.map((l: any) => {
-      const symVals = symptoms.map((s: any) => {
-        const sl = (l.symptoms ?? []).find((x: any) => x.symptomId === s.id);
+    const rows = logs.map((l) => {
+      const symVals = symptoms.map((s) => {
+        const sl = (l.symptoms ?? []).find((x) => x.symptomId === s.id);
         return sl ? sl.severity : 0;
       });
-      const medVals = medications.map((m: any) => {
-        const ml = (l.medications ?? []).find((x: any) => x.medicationId === m.id);
+      const medVals = medications.map((m) => {
+        const ml = (l.medications ?? []).find((x) => x.medicationId === m.id);
         return ml?.taken ? 'Yes' : 'No';
       });
       return [l.date, l.overallPain, l.sleepHours, l.sleepQuality, l.mood, l.energyLevel ?? '', l.energySpent ?? '',
@@ -124,8 +128,7 @@ export default function SettingsPage() {
           recoveryMinutes: Math.round(15 + Math.random() * 60),
           notes: '',
         }] : [],
-        foodTags: ['caffeine', 'sugar', 'gluten', 'dairy', 'alcohol', 'processed', 'spicy', 'soy', 'eggs', 'nuts']
-          .filter(() => Math.random() > 0.6) as any[],
+        foodTags: FOOD_TAGS.filter(() => Math.random() > 0.6),
         notes: '',
         createdAt: new Date().toISOString(),
       });
